@@ -20,36 +20,49 @@ Blocket läggs sedan in i Bricks som ett **Shortcode-element** (aldrig ett Code-
 [ampy_fore_efter]
 ```
 
-Ligger blocket på en sida där ACF-fälten finns behöver shortcoden inga attribut. Vill du testa med
-egna värden går alla fält att skicka in som attribut, t.ex.
-`[ampy_fore_efter omrade="Villa i Huddinge"]`.
+Ligger blocket på en sida där ACF-fälten finns behöver shortcoden inga attribut. För en snabb test
+utan repeater går ett enstaka par att skicka in som attribut, t.ex.
+`[ampy_fore_efter rubrik="Så ser det ut när vi har" rubrik_accent="bytt en elcentral" fore_bild="123" efter_bild="124" omfattning="Från proppskåp till ny central" signerad="1"]`.
 
 ## 2. ACF-fälten
 
-Fältgruppen kopplas till de sidor blocket ska kunna ligga på.
+Blocket visar **två par sida vid sida** på desktop och staplade på mobil. Varje par har sitt eget
+reglage.
+
+**På sidan (två fält):**
 
 | Fält | Typ | Krav | Exempel |
 |---|---|---|---|
-| `fore_bild` | Image | **Ja** | stående 4:5 |
-| `efter_bild` | Image | **Ja** | samma aspekt som `fore_bild` |
 | `rubrik` | Text | **Ja** | `Så ser det ut när vi har` |
-| `rubrik_accent` | Text | **Ja** | `bytt en elcentral` — får understrykningen |
+| `rubrik_accent` | Text | nej | `bytt en elcentral` — får understrykningen |
+
+**Repeater `foreefter_par` — en rad per jobb. Max två rader renderas.**
+
+| Underfält | Typ | Krav | Exempel |
+|---|---|---|---|
+| `fore_bild` | Image | **Ja** | kvadratisk 1:1 |
+| `efter_bild` | Image | **Ja** | samma aspekt som `fore_bild` |
 | `omfattning` | Text | **Ja** | `Från proppskåp till ny central med jordfelsbrytare` |
-| `omrade` | Text | nej | `Villa i Huddinge` — utelämnas hellre än hittas på |
 | `jobbtyp` | Text | nej | `Byte av elcentral` — används i alt-texten |
 | `fore_alt` / `efter_alt` | Text | nej | egen alt-text; annars byggs den av fälten ovan |
 | `signerad` | True/False | **Ja** | montör eller ägare har intygat par + bildtext |
 
-**Grinden:** saknas någon bild, är `rubrik` eller `omfattning` tom, eller står `signerad` på falskt —
-då renderar shortcoden **ingenting alls**. Det är avsiktligt. Ett osignerat par är inte ett bevis,
-det är en risk: MFL 10 § lägger bevisbördan på Ampy, och bilder som inte visar det de påstår är
-otillbörlig marknadsföring oavsett hur bra de ser ut.
+**Grinden per rad:** saknas någon bild, är `omfattning` tom, eller står `signerad` på falskt — då
+hoppas raden över. Blir ingen rad kvar renderar shortcoden **ingenting alls**. Det är avsiktligt.
+Ett osignerat par är inte ett bevis, det är en risk: MFL 10 § lägger bevisbördan på Ampy, och bilder
+som inte visar det de påstår är otillbörlig marknadsföring oavsett hur bra de ser ut.
+
+Finns bara **ett** signerat par renderas det centrerat i stället för halvbrett och ensamt.
+Läggs fler än två rader in renderas de två första — layouten är byggd för ett eller två par, och
+det står i koden (`$MAX_PAR`) i stället för att tyst kapas.
 
 ## 3. Bilderna
 
-- Stående **4:5**, samma aspekt på båda. Olika aspekt ger både layouthopp och en trovärdighetsläcka.
+- **Kvadratiska 1:1**, samma aspekt på båda. Olika aspekt ger både layouthopp och en
+  trovärdighetsläcka. Fotoprotokollet måste uppdateras: montören ska fota med så mycket marginal
+  att hela centralen ryms även när bilden beskärs till kvadrat.
 - **AVIF 30–80 kB per bild @1200w** (paret 100–200 kB, tak 300 kB). WordPress genererar `srcset`
-  själv; blocket sätter `sizes="(max-width: 700px) 100vw, 660px"`.
+  själv; blocket sätter `sizes="(max-width: 780px) 100vw, 620px"`.
 - `loading="lazy"` är avsiktligt: blocket ligger i beviszonen och ska aldrig vara sidans LCP.
 - **Före- och efterbilden måste vara tagna från samma punkt, i samma ljus, med samma beskärning.**
   Det enda som får skilja är jobbet. En lite rå efterbild från samma punkt slår en polerad från en
@@ -77,15 +90,20 @@ faktiskt drar i reglaget. Forskningen säger ~1 %. Utan mätning kan vi aldrig a
 - **px, inte rem.** Blocket ärver aldrig temats rotstorlek.
 - **`@container`, inte `@media`.** Blocket mäter sin egen bredd, så det beter sig rätt även i en
   smal Bricks-kolumn.
-- **Flera instanser på samma sida fungerar.** Laddas en sektion in i efterhand: `window.ampyForeEfter.start()`.
+- **Två reglage per block, helt oberoende av varandra.** Flera block på samma sida fungerar också. Laddas en sektion in i efterhand: `window.ampyForeEfter.start()`.
 - **Outfit ärvs från temat.** Blocket laddar inget eget typsnitt och ingen extern resurs.
-- **Utan JavaScript** staplas paret via `<noscript>` — båda bilderna ligger alltid helt i DOM.
+- **Utan JavaScript** staplas paren via `<noscript>` — båda bilderna ligger alltid helt i DOM.
   Se `no-js.html` för hur det ser ut.
+- **Container queries med fallback.** Blocket mäter sin egen bredd. Saknar webbläsaren `@container`
+  (Safari 15 och äldre) faller det tillbaka på en vanlig viewport-fråga, så en gammal iPhone aldrig
+  får två 180 px breda ramar bredvid varandra.
+- **Bilderna är `pointer-events: none` och `draggable="false"`.** Utan det startar webbläsaren sin
+  egen bilddragning så fort man drar i bilden, och reglaget tappar pekaren mitt i rörelsen.
 
 ## 6. Bygg om förhandsgranskningen
 
-Markupen finns på ett enda ställe: mallen mellan `AMPY-MALL-START` och `AMPY-MALL-SLUT` i
-`dist/02-fore-efter.php`. Ändrar du den kör du:
+Markupen finns på ett enda ställe: mallarna mellan `AMPY-MALL-YTTRE-START`/`-SLUT` och
+`AMPY-MALL-PAR-START`/`-SLUT` i `dist/02-fore-efter.php`. Ändrar du den kör du:
 
 ```bash
 python3 build.py

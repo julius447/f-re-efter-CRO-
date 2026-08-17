@@ -75,8 +75,14 @@
       return ((handelse.clientX - r.left) / r.width) * 100;
     }
 
+    /* Bältet till hängslena i CSS: även om något i ramen skulle vara dragbart
+       får webbläsaren aldrig starta sin egen drag-and-drop mitt i en jämförelse. */
+    ram.addEventListener("dragstart", function (e) { e.preventDefault(); });
+
     /* --- Pekare: tryck-för-att-placera + drag ---------------------------- */
     ram.addEventListener("pointerdown", function (e) {
+      if (e.button !== undefined && e.button !== 0) return;   // bara vänster/primär
+      e.preventDefault();                                     // ingen textmarkering, ingen bilddragning
       drar = true;
       if (ram.setPointerCapture) {
         try { ram.setPointerCapture(e.pointerId); } catch (fel) { /* strunt samma */ }
@@ -87,6 +93,8 @@
 
     ram.addEventListener("pointermove", function (e) {
       if (!drar) return;
+      // Har knappen släppts utanför ramen är draget över, oavsett vad vi tror.
+      if (e.pointerType === "mouse" && e.buttons === 0) { drar = false; return; }
       satt(positionFran(e), true);
     });
 

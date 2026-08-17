@@ -1,8 +1,9 @@
 # Före/efter-blocket — riktning A, "Reglaget"
 
 Ampy uppdrag 06. Ett rent bevisblock där riktiga före/efter-foton från Ampys egna jobb bär hela
-budskapet: en H2, noll asks, designen talar. Ett par i samma ram — besökaren drar sömmen och ser
-förvandlingen ske i exakt den punkt hen väljer.
+budskapet: en H2, noll asks, designen talar. **Två jobb sida vid sida**, vart och ett i en kvadratisk
+ram med sitt eget reglage — besökaren drar sömmen och ser förvandlingen ske i exakt den punkt hen
+väljer. På mobil staplas de.
 
 **Live:** https://julius447.github.io/f-re-efter-CRO-/
 · [utan JavaScript](https://julius447.github.io/f-re-efter-CRO-/no-js.html)
@@ -30,7 +31,7 @@ som inte är signerat.
 | `dist/02-fore-efter.php` | Shortcode `[ampy_fore_efter]` + markupmallen → FluentSnippets, frontend & backend |
 | `dist/03-fore-efter.js` | Reglaget → FluentSnippets, footer |
 | `index.html` | Förhandsgranskning. Genereras av `build.py` ur PHP-mallen, läser `dist/` |
-| `no-js.html` | Samma block utan skript: staplat par |
+| `no-js.html` | Samma block utan skript: staplade par |
 | `build.py` | Packar förhandsgranskningen ur PHP-mallen (en sanning, ingen drift) |
 | `HANDOVER.md` | Vad Chris klistrar in var, ACF-fälten, bildkraven, mätningen |
 | `wireframes/` | Fas 1, oförändrad |
@@ -42,7 +43,7 @@ som inte är signerat.
 - **EN H2.** Ingen ingress, ingen eyebrow.
 - **Renderingskontraktet.** Båda bilderna som riktiga `<img>` med width/height, synliga utan JS.
   Ingen enterView, ingen JS-injicerad src. Reglaget är en enhancement, aldrig grunden.
-- **Stående 4:5**, samma aspekt på båda bilderna.
+- **Kvadratiska 1:1**, samma aspekt på båda bilderna.
 - **Variationen bor i ACF**, aldrig i mallen. Samma block på 22 tjänstesidor.
 - **Endast riktiga Ampy-jobb.** Inga AI-bilder, ingen stock, ingen iscensättning, ingen retusch som
   rör arbetets kvalitet. Osignerat par → blocket renderar ingenting.
@@ -51,25 +52,30 @@ som inte är signerat.
 
 | | |
 |---|---|
+| Antal | Två par, ett reglage vardera, helt oberoende av varandra |
 | Viloläge | 35 % — EFTER dominant, så den som aldrig drar ändå ser utfallet |
 | Peka | tryck var som helst i ramen flyttar sömmen dit; drag följer fingret |
 | Tangentbord | piltangenter ±5 %, PageUp/PageDown ±10 %, Home/End |
 | Skärmläsare | reglaget säger "Efter syns till 65 procent", inte "35" |
 | Touch | `pan-y pinch-zoom` — vertikal scroll och nyp-zoom lever, vi rör aldrig touchmove |
 | Rörelse | 260 ms, under husets 300 ms-tak; engångsvinkning som lär ut mekaniken, avstängd vid `prefers-reduced-motion` |
+| Dragning | bilderna är `pointer-events: none` + `draggable="false"`, annars startar webbläsaren sin egen bilddragning |
 | Utan JS | staplat par via `<noscript>`, inget innehåll försvinner |
-| Utskrift | paret staplas — ett halvt foto är meningslöst på papper |
+| Utskrift | paren staplas — ett halvt foto är meningslöst på papper |
 
 ## Ägarbeslut som sitter i koden
 
 | Beslut | Datum | Var |
 |---|---|---|
 | Riktning A vinner, B och C avförs | 2026-08-17 | hela repot |
+| Två par sida vid sida i stället för ett | 2026-08-17 | `.ampy-foreefter__par` |
+| Bilderna är kvadratiska, inte stående | 2026-08-17 | `aspect-ratio: 1 / 1` |
+| H2:an är exakt sajtens globala H2 (aptext-2-5xl / 500, ingen egen line-height eller letter-spacing) | 2026-08-17 | `.ampy-foreefter__rubrik` |
+| Mörka skärmen bakom chipsen borttagen | 2026-08-17 | `__ram::before` struken |
+| EFTER-chippet: en plan färg, ingen gradient, ingen blixt | 2026-08-17 | `.ampy-foreefter__chip--efter` |
+| "Villa i [Ort]" borttagen ur bildtexten | 2026-08-17 | `__plats` struken |
 | Understrykningen under rubrikaccenten är svart, inte grön | 2026-08-17 | `.ampy-foreefter__accent::after` |
-| EFTER-chippet får en gladare grön: vårgrönt → smaragd med midnattstext | 2026-08-17 | `.ampy-foreefter__chip--efter` |
-| Den gröna punkten i bildtexten tas bort | 2026-08-17 | orten står på egen rad i stället |
 | Raden "Riktiga, oretuscherade bilder från våra jobb" tas bort | 2026-08-17 | borttagen; stänger samtidigt GAP-11.1 |
-| Aspekten är 4:5 även på desktop | 2026-08-17 | 4:3 klippte bort centralens topp och botten |
 
 ## Öppna grindar
 
@@ -78,5 +84,6 @@ som inte är signerat.
 | **GRIND 0** | Fotobiblioteket finns inte | **Blockerar lansering.** Fotoprotokollet måste ut till montörerna. |
 | GAP-8.1 | Medgivanderad i arbetsordern | Blockerar lansering. |
 | GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket är byggt fristående. |
-| Bildtexten | Ska orten stå kvar när den gröna punkten är borta? | Står kvar på egen rad tills annat sägs. |
-| ACF | Fältgruppen finns inte i WordPress ännu | Se `HANDOVER.md` §2. |
+| ACF | Fältgruppen + repeatern finns inte i WordPress ännu | Se `HANDOVER.md` §2. |
+| Fotoprotokollet | Kvadratisk beskärning kräver att montören fotar med mer marginal | Protokollet måste uppdateras innan fotograferingen börjar. |
+| iOS på riktig enhet | Testat i Blink (samma motor som Android/Chrome) + touch-emulering, **inte** i Safari/WebKit på enhet | Öppna live-länken på en iPhone och dra i båda reglagen. |
