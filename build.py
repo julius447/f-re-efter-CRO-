@@ -21,6 +21,7 @@ PHP = os.path.join(ROT, "dist", "02-fore-efter.php")
 PAR = [
     {
         "id": "ampy-foreefter-1",
+        # Syns inte längre i blocket — bär alt-texten och reglagets namn.
         "omfattning": "Från proppskåp till ny central med jordfelsbrytare",
         "fore": ("img/par1-fore.svg", "Byte av elcentral — före"),
         "efter": ("img/par1-efter.svg", "Byte av elcentral — efter, utfört av Ampy"),
@@ -37,6 +38,9 @@ YTTRE = {
     "{{RUBRIK}}": "Så ser det ut när vi har",
     "{{ACCENT}}": ' <span class="ampy-foreefter__accent">bytt en elcentral</span>',
     "{{RUBRIK_ID}}": "ampy-foreefter-rubrik-2-2",
+    # Semi-global tagline: samma mönster på alla tjänstesidor, egen text per tjänst.
+    "{{TAGLINE}}": '\n\t\t<p class="ampy-foreefter__tagline">Ny elcentral, jordfelsbrytare '
+                   'och märkta grupper. Samma jobb oavsett hur det såg ut innan.</p>',
 }
 
 NOTIS = """<p class="mockup-note">
@@ -86,7 +90,6 @@ def blocket(php):
             "{{ID}}": p["id"],
             "{{EFTER_IMG}}": bild(*p["efter"]),
             "{{FORE_IMG}}": bild(*p["fore"]),
-            "{{OMFATTNING}}": p["omfattning"],
             "{{OMFATTNING_ATTR}}": p["omfattning"],
         }.items():
             bit = bit.replace(nyckel, varde)

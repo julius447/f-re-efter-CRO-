@@ -177,6 +177,18 @@
   z-index: 2;
 }
 
+/* Spegelbilden av raden ovan. FÖRE-chippet bor i före-lagret och klipps bort
+   när sömmen går åt vänster; EFTER-chippet bor här och klipps bort när sömmen
+   går åt höger. Symmetrin är hela poängen — drar man helt åt ett håll ska den
+   sidan försvinna, inte lämna kvar sin etikett. */
+.ampy-foreefter__chiplager {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  clip-path: inset(0 0 0 var(--ampyfe-pos));
+}
+
 /* --- Sömmen -------------------------------------------------------------- */
 .ampy-foreefter__somlinje {
   position: absolute;
@@ -334,18 +346,20 @@
   border-radius: var(--ampyfe-radie-full);
 }
 
-/* --- Bildtexten ---------------------------------------------------------- */
-.ampy-foreefter__bildtext {
-  margin: var(--ampyfe-space-xs) auto 0;
+/* --- Taglinen ------------------------------------------------------------ */
+/* EN rad för hela blocket, unik per tjänst. Den står EFTER paren, aldrig före:
+   H2:an är blockets enda öppning, taglinen är dess avslutande mening. Den
+   ersatte bildtexterna per par (ägarbeslut 2026-08-17) och gör jobbet att binda
+   ihop två olika utgångslägen till ett och samma löfte. */
+.ampy-foreefter__tagline {
+  max-width: 62ch;
+  margin: var(--ampyfe-space-l) auto 0;
+  font-size: var(--ampyfe-text-ml);
+  font-weight: 400;
+  line-height: 1.45;
+  color: rgba(9, 11, 50, 0.78);
   text-align: center;
   text-wrap: balance;
-}
-.ampy-foreefter__omfattning {
-  display: block;
-  font-size: var(--ampyfe-text-m);
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--ampyfe-midnatt);
 }
 
 /* Endast för skärmläsare. Instruktionen ska finnas, inte synas: sömmen,

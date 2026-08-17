@@ -61,6 +61,7 @@ som inte är signerat.
 | Rörelse | 260 ms, under husets 300 ms-tak; engångsvinkning som lär ut mekaniken, avstängd vid `prefers-reduced-motion` |
 | Dragning | bilderna är `pointer-events: none` + `draggable="false"`, annars startar webbläsaren sin egen bilddragning |
 | Utan JS | staplat par via `<noscript>`, inget innehåll försvinner |
+| Chipsen | båda klipps av sömmen: dra helt åt vänster och FÖRE försvinner, helt åt höger och EFTER försvinner |
 | Utskrift | paren staplas — ett halvt foto är meningslöst på papper |
 
 ## Ägarbeslut som sitter i koden
@@ -74,6 +75,8 @@ som inte är signerat.
 | Mörka skärmen bakom chipsen borttagen | 2026-08-17 | `__ram::before` struken |
 | EFTER-chippet: en plan färg, ingen gradient, ingen blixt | 2026-08-17 | `.ampy-foreefter__chip--efter` |
 | "Villa i [Ort]" borttagen ur bildtexten | 2026-08-17 | `__plats` struken |
+| Bildtexterna per par ersatta av EN semi-global tagline, unik per tjänst | 2026-08-17 | `.ampy-foreefter__tagline`, ACF-fält `tagline` |
+| EFTER-chippet klipps spegelvänt mot sömmen, så en dragning helt åt höger döljer det precis som en dragning helt åt vänster döljer FÖRE | 2026-08-17 | `.ampy-foreefter__chiplager` |
 | Understrykningen under rubrikaccenten är svart, inte grön | 2026-08-17 | `.ampy-foreefter__accent::after` |
 | Raden "Riktiga, oretuscherade bilder från våra jobb" tas bort | 2026-08-17 | borttagen; stänger samtidigt GAP-11.1 |
 

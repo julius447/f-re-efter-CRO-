@@ -35,6 +35,29 @@ reglage.
 |---|---|---|---|
 | `rubrik` | Text | **Ja** | `Så ser det ut när vi har` |
 | `rubrik_accent` | Text | nej | `bytt en elcentral` — får understrykningen |
+| `tagline` | Text | nej | en rad för hela blocket, unik per tjänst — se nedan |
+
+### Taglinen
+
+Den ersätter bildtexterna per par. **En rad för hela blocket**, placerad under paren, aldrig över:
+H2:an är blockets enda öppning, taglinen dess avslutande mening.
+
+Mönstret är semi-globalt — samma form på alla tjänstesidor, egen text per tjänst:
+
+> **Räkna upp vad jobbet faktiskt innehåller. Avsluta med det som binder ihop två olika utgångslägen.**
+
+| Tjänst | Tagline |
+|---|---|
+| Elcentral | Ny elcentral, jordfelsbrytare och märkta grupper. Samma jobb oavsett hur det såg ut innan. |
+| Laddbox | Laddbox på egen grupp, med rätt skydd och en kabeldragning som håller. Samma jobb oavsett hur det såg ut innan. |
+| Belysning | Ny armatur, rätt ljus och en installation som går att serva. Samma jobb oavsett hur det såg ut innan. |
+
+Varför den formen: de två paren visar med flit **olika** utgångslägen. Utan en rad som binder ihop
+dem ser besökaren två slumpvisa jobb. Med den ser hen ett löfte som gäller oavsett hur illa det ser
+ut hemma hos just hen — vilket är den enda fråga en villaägare faktiskt har.
+
+Resten av de 22 tjänsterna skriver ni själva. Håll er till mönstret, och skriv bara sådant som är
+sant för varje jobb i den tjänsten — inte för det bästa.
 
 **Repeater `foreefter_par` — en rad per jobb. Max två rader renderas.**
 
@@ -42,7 +65,7 @@ reglage.
 |---|---|---|---|
 | `fore_bild` | Image | **Ja** | kvadratisk 1:1 |
 | `efter_bild` | Image | **Ja** | samma aspekt som `fore_bild` |
-| `omfattning` | Text | **Ja** | `Från proppskåp till ny central med jordfelsbrytare` |
+| `omfattning` | Text | **Ja** | `Från proppskåp till ny central med jordfelsbrytare` — syns inte längre i blocket, men bär alt-texten och reglagets namn för skärmläsare |
 | `jobbtyp` | Text | nej | `Byte av elcentral` — används i alt-texten |
 | `fore_alt` / `efter_alt` | Text | nej | egen alt-text; annars byggs den av fälten ovan |
 | `signerad` | True/False | **Ja** | montör eller ägare har intygat par + bildtext |

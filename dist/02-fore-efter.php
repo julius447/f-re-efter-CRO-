@@ -11,11 +11,22 @@
  * BLOCKFÄLT (på sidan):
  *   rubrik         text  OBLIGATORISK  "Så ser det ut när vi har"
  *   rubrik_accent  text  frivillig     "bytt en elcentral"  (får understrykningen)
+ *   tagline        text  frivillig     EN rad för hela blocket, unik per tjänst.
+ *                                      Mönster: räkna upp vad jobbet faktiskt
+ *                                      innehåller, avsluta med det som binder
+ *                                      ihop två olika utgångslägen. Ex:
+ *                                      "Ny elcentral, jordfelsbrytare och märkta
+ *                                      grupper. Samma jobb oavsett hur det såg
+ *                                      ut innan." Ersätter de tidigare
+ *                                      bildtexterna per par (ägarbeslut 2026-08-17).
  *
  * REPEATER `foreefter_par` — en rad per jobb, max 2 renderas:
  *   fore_bild   image      OBLIGATORISK  kvadratisk 1:1
  *   efter_bild  image      OBLIGATORISK  samma aspekt som fore_bild
  *   omfattning  text       OBLIGATORISK  "Från proppskåp till ny central med jordfelsbrytare"
+ *                                     Syns INTE längre i blocket, men bär alt-texten
+ *                                     och reglagets namn för skärmläsare — så den
+ *                                     är fortfarande obligatorisk.
  *   jobbtyp     text       frivillig     "Byte av elcentral" — används i alt-texten
  *   fore_alt    text       frivillig     egen alt-text
  *   efter_alt   text       frivillig     egen alt-text
@@ -38,6 +49,7 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 	$a = shortcode_atts(array(
 		'rubrik'        => '',
 		'rubrik_accent' => '',
+		'tagline'       => '',
 		// Enstaka par utan repeater (t.ex. för en snabb test i Bricks):
 		'fore_bild'     => '',
 		'efter_bild'    => '',
@@ -53,8 +65,9 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 		return function_exists('get_field') ? get_field($nyckel) : '';
 	};
 
-	$rubrik = trim((string) $falt('rubrik'));
-	$accent = trim((string) $falt('rubrik_accent'));
+	$rubrik  = trim((string) $falt('rubrik'));
+	$accent  = trim((string) $falt('rubrik_accent'));
+	$tagline = trim((string) $falt('tagline'));
 	if ($rubrik === '') { return ''; }
 
 	// Raderna: repeatern först, annars det enstaka paret från attributen.
@@ -98,13 +111,19 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 					<!-- EFTER är basskiktet och ligger alltid helt i DOM -->
 					<div class="ampy-foreefter__lager ampy-foreefter__lager--efter">
 						{{EFTER_IMG}}
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter">Efter</span>
 					</div>
 
 					<!-- FÖRE ligger ovanpå och klipps vid sömmen. Chippet klipps med. -->
 					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
 						{{FORE_IMG}}
 						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore">Före</span>
+					</div>
+
+					<!-- EFTER-chippet klipps spegelvänt: det finns bara till höger om
+					     sömmen, precis som FÖRE-chippet bara finns till vänster. Drar
+					     man hela vägen åt ena hållet försvinner motsvarande sida helt. -->
+					<div class="ampy-foreefter__chiplager">
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter">Efter</span>
 					</div>
 
 					<div class="ampy-foreefter__somlinje" aria-hidden="true"></div>
@@ -118,10 +137,6 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 				       aria-label="Jämför före och efter: {{OMFATTNING_ATTR}}" aria-describedby="{{ID}}-hjalp"
 				       aria-valuetext="Efter syns till 65 procent">
 				<p class="ampy-foreefter__sr" id="{{ID}}-hjalp">Dra reglaget för att jämföra före och efter. Du kan också trycka var som helst i bilden, eller använda piltangenterna.</p>
-
-				<figcaption class="ampy-foreefter__bildtext">
-					<span class="ampy-foreefter__omfattning">{{OMFATTNING}}</span>
-				</figcaption>
 			</figure>
 HTML;
 	/* AMPY-MALL-PAR-SLUT */
@@ -166,7 +181,6 @@ HTML;
 			'{{ID}}'               => esc_attr($id),
 			'{{EFTER_IMG}}'        => $efter_img,
 			'{{FORE_IMG}}'         => $fore_img,
-			'{{OMFATTNING}}'       => esc_html($omfattning),
 			'{{OMFATTNING_ATTR}}'  => esc_attr($omfattning),
 		)) . "\n";
 	}
@@ -189,6 +203,12 @@ HTML;
 		? ' <span class="ampy-foreefter__accent">' . esc_html($accent) . '</span>'
 		: '';
 
+	// Taglinen står EFTER paren, aldrig före. Den är en avslutande rad, inte en
+	// ingress — H2:an ska förbli blockets enda öppning (kanon §4.2).
+	$tagline_rad = $tagline !== ''
+		? "\n\t\t<p class=\"ampy-foreefter__tagline\">" . esc_html($tagline) . "</p>"
+		: '';
+
 	$rubrik_id = 'ampy-foreefter-rubrik-' . count($par_ids) . '-' . $rakning;
 
 	/* AMPY-MALL-YTTRE-START — index.html byggs ur exakt den här strängen
@@ -203,7 +223,7 @@ HTML;
 		<h2 class="ampy-foreefter__rubrik" id="{{RUBRIK_ID}}">{{RUBRIK}}{{ACCENT}}</h2>
 
 		<div class="ampy-foreefter__par">
-{{PAR}}		</div>
+{{PAR}}		</div>{{TAGLINE}}
 
 	</div>
 </section>
@@ -216,5 +236,6 @@ HTML;
 		'{{RUBRIK}}'    => esc_html($rubrik),
 		'{{ACCENT}}'    => $accent_del,
 		'{{PAR}}'       => $par_html,
+		'{{TAGLINE}}'   => $tagline_rad,
 	));
 });
