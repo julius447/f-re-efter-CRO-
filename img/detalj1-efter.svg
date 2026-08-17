@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img">
+<defs>
+  <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#eff3fa"/><stop offset="1" stop-color="#e0e6f0"/>
+  </linearGradient>
+  <linearGradient id="rail" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#e7ecf4"/><stop offset="1" stop-color="#d2dae6"/>
+  </linearGradient>
+  <linearGradient id="oldbody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#d8d1c3"/><stop offset="1" stop-color="#c6bfb0"/>
+  </linearGradient>
+  <linearGradient id="newbody" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f4f7fb"/>
+  </linearGradient>
+  <radialGradient id="vign" cx="0.5" cy="0.42" r="0.78">
+    <stop offset="0.55" stop-color="#000" stop-opacity="0"/>
+    <stop offset="1" stop-color="#0b1030" stop-opacity="0.10"/>
+  </radialGradient>
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0b1030" flood-opacity="0.16"/>
+  </filter>
+  
+</defs>
+<rect width="800" height="1000" fill="url(#wall)"/>
+<rect y="906" width="800" height="94" fill="#d7dee9"/>
+<line x1="0" y1="906" x2="800" y2="906" stroke="#c6cfdd" stroke-width="2"/><g filter="url(#soft)">
+  <rect x="120" y="240" width="560" height="520" rx="14" fill="#f8fafd" stroke="#d3dae4" stroke-width="3"/>
+</g><rect x="176" y="330" width="448" height="120" rx="8" fill="#fdfeff" stroke="#c9d2de" stroke-width="3"/><rect x="190" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="205" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="234" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="249" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="278" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="293" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="322" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="337" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="366" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="381" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="410" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="425" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="454" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="469" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="498" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="513" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="542" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="557" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><rect x="586" y="344" width="30" height="92" rx="4" fill="#f3f7fb" stroke="#c9d2de" stroke-width="2"/><circle cx="601" cy="368" r="8" fill="none" stroke="#00a991" stroke-width="3"/><line x1="205" y1="436" x2="205" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="249" y1="436" x2="249" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="293" y1="436" x2="293" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="337" y1="436" x2="337" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="381" y1="436" x2="381" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="425" y1="436" x2="425" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="469" y1="436" x2="469" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="513" y1="436" x2="513" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="557" y1="436" x2="557" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><line x1="601" y1="436" x2="601" y2="640" stroke="#aeb8c8" stroke-width="8" stroke-linecap="round"/><rect x="176" y="640" width="448" height="26" rx="8" fill="#e9eef5" stroke="#00a991" stroke-width="2.5"/><rect width="800" height="1000" fill="url(#vign)"/>
+<g opacity="0.62">
+  <rect x="417" y="897" width="355" height="77" rx="38" fill="#090b32" fill-opacity="0.55"/>
+  <text x="594" y="950" font-family="Outfit, Arial, sans-serif" font-size="36"
+        font-weight="600" letter-spacing="4.6" fill="#fff" text-anchor="middle">ILLUSTRATION</text>
+</g>
+</svg>

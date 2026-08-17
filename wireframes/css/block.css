@@ -1,0 +1,380 @@
+/* ==========================================================================
+   FÖRE/EFTER-BLOCKET — wireframes för riktning A, B och C
+   Byggt på riktiga produktionstokens (css/tokens.css). Inga knappar, inga
+   länkar: 0 asks (uppdrag §4.1). Båda bilderna renderas alltid som riktiga
+   <img> med width/height — ingen enterView, ingen JS-injicerad src (§4.3).
+   Brytpunkter: 992 / 768 / 480 (§11.4 — 380px är INGEN brytpunkt).
+   ========================================================================== */
+
+/* --- Blockskal ----------------------------------------------------------- */
+.fe {
+  background: var(--apsky-mist);
+  padding-block: var(--apspace-2xl);
+  padding-inline: var(--apspace-m);
+}
+.fe__inner {
+  max-width: var(--apmax-screen-width);
+  margin-inline: auto;
+}
+
+.fe__h2 {
+  margin: 0 0 var(--apspace-l);
+  font-size: var(--aptext-2-5xl);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--apmidnight-blue);
+  text-align: center;
+  text-wrap: balance;
+}
+/* Accenten är en teal understrykning, inte teal text: #00a991 på vitt ger
+   2,97:1 och klarar inte 3:1 för stor text. */
+.fe__accent {
+  box-shadow: inset 0 -0.14em 0 rgba(0, 169, 145, 0.32);
+  padding-bottom: 0.02em;
+}
+
+/* --- Kort + par ---------------------------------------------------------- */
+.fe-card {
+  margin: 0;
+  background: #fff;
+  border-radius: var(--apradius-l);
+  box-shadow: var(--apshadow-l);
+  padding: var(--apspace-2xs);
+  overflow: hidden;
+}
+
+.fe-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;                                   /* den tunna mittsömmen        */
+  background: rgba(9, 11, 50, 0.12);
+  border-radius: var(--apradius-m);
+  overflow: hidden;
+}
+
+.fe-shot { position: relative; }
+.fe-shot > img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: #e4e8f0;
+}
+
+/* --- Chips (FÖRE / EFTER) ------------------------------------------------ */
+.fe-chip {
+  position: absolute;
+  top: var(--apspace-xs);
+  left: var(--apspace-xs);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--apradius-full);
+  font-size: var(--aptext-s);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+.fe-chip--fore  { background: rgba(9, 11, 50, 0.84); color: #fff; }
+.fe-chip--efter { background: var(--apteal-core);    color: #fff; }
+.fe-chip--xs    { padding: 0.45rem 0.9rem; font-size: var(--aptext-xs); top: 0.8rem; left: 0.8rem; }
+/* Endast riktning A: de två chipsen delar ram och kan därför inte dela hörn. */
+.fe-chip--right { left: auto; right: var(--apspace-xs); }
+
+/* --- Bildtext + finstil -------------------------------------------------- */
+.fe-caption {
+  margin: var(--apspace-m) auto 0;
+  max-width: 62ch;
+  text-align: center;
+  font-size: var(--aptext-mm);
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--apmidnight-blue);
+  text-wrap: balance;
+}
+.fe-caption strong { font-weight: 600; }
+.fe-caption .fe-dot { color: var(--apteal-core); padding-inline: 0.4rem; }
+
+.fe-fine {
+  margin: var(--apspace-2xs) auto 0;
+  max-width: 62ch;
+  text-align: center;
+  font-size: var(--aptext-s);
+  color: var(--apdarkest-black-60);
+}
+
+/* --- Sömmarkör (endast mobil, staplat läge) ------------------------------ */
+.fe-seam { display: none; }
+.fe-seam__badge {
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(9, 11, 50, 0.22);
+  display: grid;
+  place-items: center;
+  color: var(--apteal-core);
+}
+.fe-seam__badge svg { width: 1.8rem; height: 1.8rem; }
+
+@media (max-width: 768px) {
+  .fe-pair { grid-template-columns: 1fr; gap: 3px; }
+  .fe-seam {
+    display: grid;
+    place-items: center;
+    height: 0;
+    position: relative;
+    z-index: 3;
+    overflow: visible;
+  }
+}
+
+/* ==========================================================================
+   RIKTNING A — REGLAGET
+   ========================================================================== */
+.fe-slider { max-width: 880px; margin: 0 auto; }
+
+.fe-frame {
+  position: relative;
+  aspect-ratio: 4 / 3;                 /* GAP-A1 fallback: 4:3 på desktop     */
+  border-radius: var(--apradius-l);
+  overflow: hidden;
+  box-shadow: var(--apshadow-l);
+  background: #e4e8f0;
+  touch-action: pan-y;                 /* vertikal scroll släpps ALLTID igenom */
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fe-layer { position: absolute; inset: 0; }
+.fe-layer > img { width: 100%; height: 100%; object-fit: cover; }
+.fe-layer--before {
+  clip-path: inset(0 calc(100% - var(--fe-pos, 35%)) 0 0);
+}
+
+.fe-seamline {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--fe-pos, 35%);
+  width: 3px;
+  margin-left: -1.5px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(9, 11, 50, 0.22);
+  pointer-events: none;
+  z-index: 4;
+}
+.fe-handle {
+  position: absolute;
+  top: 50%;
+  left: var(--fe-pos, 35%);
+  transform: translate(-50%, -50%);
+  width: 4.8rem;                        /* ≥ 44px träffyta                     */
+  height: 4.8rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(9, 11, 50, 0.3);
+  display: grid;
+  place-items: center;
+  color: var(--apmidnight-blue);
+  pointer-events: none;
+  z-index: 5;
+}
+.fe-handle svg { width: 2.2rem; height: 2.2rem; }
+
+.fe-hint {
+  position: absolute;
+  /* Följer sömmen men klamras så pillret aldrig klipps vid 0 % eller 100 %. */
+  left: clamp(10.5rem, var(--fe-pos, 35%), calc(100% - 10.5rem));
+  top: calc(50% + 4.4rem);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.6rem 1.2rem;
+  border-radius: var(--apradius-full);
+  background: rgba(9, 11, 50, 0.84);
+  color: #fff;
+  font-size: var(--aptext-s);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.25s ease;
+}
+.fe-slider.is-touched .fe-hint { opacity: 0; }
+
+/* Reglaget: spåret sitter UNDER bilden så tummen aldrig skymmer sömmen. */
+.fe-range {
+  display: block;
+  width: 100%;
+  height: 4.4rem;
+  margin-top: var(--apspace-2xs);
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: pan-y;
+}
+.fe-range::-webkit-slider-runnable-track {
+  height: 0.6rem;
+  border-radius: var(--apradius-full);
+  background: linear-gradient(90deg, rgba(9,11,50,0.30) 0 var(--fe-pos, 35%), var(--apteal-core) var(--fe-pos, 35%) 100%);
+}
+.fe-range::-moz-range-track {
+  height: 0.6rem;
+  border-radius: var(--apradius-full);
+  background: linear-gradient(90deg, rgba(9,11,50,0.30) 0 var(--fe-pos, 35%), var(--apteal-core) var(--fe-pos, 35%) 100%);
+}
+.fe-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 2.4rem; height: 2.4rem;
+  margin-top: -0.9rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  border: 2px solid var(--apmidnight-blue);
+  box-shadow: 0 1px 4px rgba(9, 11, 50, 0.28);
+}
+.fe-range::-moz-range-thumb {
+  width: 2.4rem; height: 2.4rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  border: 2px solid var(--apmidnight-blue);
+  box-shadow: 0 1px 4px rgba(9, 11, 50, 0.28);
+}
+.fe-range:focus-visible { outline: 3px solid var(--apteal-core); outline-offset: 4px; }
+
+.fe-help {
+  margin: 0;
+  text-align: center;
+  font-size: var(--aptext-xs);
+  color: var(--apdarkest-black-60);
+}
+
+@media (max-width: 768px) {
+  .fe-frame { aspect-ratio: 4 / 5; }    /* mobil behåller stående 4:5          */
+}
+
+/* --- A utan JS: staplat par (renderingskontraktet, §4.3) ----------------- */
+html:not(.js) .fe-frame {
+  position: static;
+  aspect-ratio: auto;
+  display: grid;
+  gap: 3px;
+  background: rgba(9, 11, 50, 0.12);
+  cursor: auto;
+  box-shadow: var(--apshadow-l);
+}
+html:not(.js) .fe-layer { position: relative; inset: auto; }
+html:not(.js) .fe-layer > img { height: auto; aspect-ratio: 4 / 5; }
+html:not(.js) .fe-layer--before { clip-path: none; order: -1; }
+html:not(.js) .fe-seamline,
+html:not(.js) .fe-handle,
+html:not(.js) .fe-hint,
+html:not(.js) .fe-range,
+html:not(.js) .fe-help { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-hint { transition: none; }
+}
+
+/* ==========================================================================
+   RIKTNING C — JOURNALEN
+   ========================================================================== */
+.fe-case {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 32rem;
+  gap: var(--apspace-l);
+  align-items: start;
+}
+
+.fe-facts { margin: 0; padding-top: var(--apspace-2xs); }
+.fe-facts dt {
+  font-size: var(--aptext-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--apteal-core);
+}
+.fe-facts dd {
+  margin: 0.4rem 0 var(--apspace-s);
+  font-size: var(--aptext-m);
+  line-height: 1.45;
+  color: var(--apmidnight-blue);
+}
+.fe-facts dd:last-of-type { margin-bottom: 0; }
+
+.fe-risk {
+  margin-top: var(--apspace-s);
+  padding-top: var(--apspace-s);
+  border-top: 1px solid rgba(9, 11, 50, 0.12);
+  font-size: var(--aptext-sm);
+  line-height: 1.5;
+  color: var(--apmidnight-blue);
+}
+.fe-risk__label {
+  display: block;
+  font-size: var(--aptext-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--apdarkest-black-60);
+  margin-bottom: 0.4rem;
+}
+
+/* Stödpar */
+.fe-support {
+  margin-top: var(--apspace-l);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--apspace-m);
+}
+.fe-support > figure { margin: 0; }
+.fe-support__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: rgba(9, 11, 50, 0.12);
+  border-radius: var(--apradius-m);
+  overflow: hidden;
+  box-shadow: var(--apshadow-s);
+}
+.fe-support__pair .fe-shot > img { aspect-ratio: 4 / 5; }
+.fe-support__cap {
+  margin: var(--apspace-2xs) 0 0;
+  font-size: var(--aptext-s);
+  line-height: 1.4;
+  color: var(--apdarkest-black-60);
+}
+
+@media (max-width: 992px) {
+  .fe-case { grid-template-columns: 1fr; }
+  .fe-support { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  /* GAP-C1, variant "stapel" */
+  .fe-support--stapel { grid-template-columns: 1fr; }
+
+  /* GAP-C1, variant "svep" — native scroll-snap, ingen JS-karusell */
+  .fe-support--svep {
+    display: flex;
+    gap: var(--apspace-s);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* Utan denna snappar webbläsaren bort vänsterindraget vid inladdning. */
+    scroll-padding-inline-start: var(--apspace-m);
+    -webkit-overflow-scrolling: touch;
+    padding-inline: var(--apspace-m);
+    margin-inline: calc(var(--apspace-m) * -1);
+    scrollbar-width: none;
+  }
+  .fe-support--svep::-webkit-scrollbar { display: none; }
+  .fe-support--svep > * {
+    flex: 0 0 76%;
+    scroll-snap-align: start;
+  }
+  /* Stödparen behåller jämsides-formen även i svep — de är små */
+  .fe-support--svep .fe-support__pair { grid-template-columns: 1fr 1fr; }
+  .fe-support--stapel .fe-support__pair { grid-template-columns: 1fr 1fr; }
+  .fe-support .fe-seam { display: none; }
+}

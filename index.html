@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Före/efter-blocket · tre riktningar, mockup</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<style>
+  body { background: #fff; }
+  .wrap { max-width: 1180px; margin-inline: auto; padding: 0 var(--apspace-m) var(--apspace-3xl); }
+
+  /* --- Sidhuvud --------------------------------------------------------- */
+  .top {
+    background:
+      radial-gradient(90% 120% at 12% 0%, rgba(0,169,145,.22), transparent 58%),
+      var(--apmidnight-blue);
+    color: #fff;
+    padding: var(--apspace-2xl) var(--apspace-m) var(--apspace-xl);
+    margin-bottom: var(--apspace-xl);
+  }
+  .top__inner { max-width: 1180px; margin-inline: auto; }
+  .top h1 { margin: 0 0 var(--apspace-xs); font-size: var(--aptext-3xl); font-weight: 500;
+            line-height: 1.1; letter-spacing: -0.02em; }
+  .top p { margin: 0; max-width: 74ch; font-size: var(--aptext-m); font-weight: 300;
+           color: rgba(255,255,255,.78); }
+  .top .badge { display: inline-flex; align-items: center; gap: .7rem; margin-bottom: var(--apspace-s);
+                padding: .6rem 1.4rem; border-radius: var(--apradius-full);
+                background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.18);
+                font-size: var(--aptext-xs); letter-spacing: .14em; text-transform: uppercase; }
+  .top .badge svg { width: 1.3rem; height: 1.3rem; color: var(--apneon-mint); }
+
+  .disclosure { display: flex; gap: 1.2rem; align-items: flex-start; max-width: 1180px;
+                margin: 0 auto var(--apspace-xl); padding: var(--apspace-s) var(--apspace-m);
+                border: 1px solid rgba(0,169,145,.3); border-radius: var(--apradius-m);
+                background: rgba(0,169,145,.05); font-size: var(--aptext-sm); font-weight: 300;
+                line-height: 1.5; color: var(--apmidnight-blue); }
+  .disclosure b { font-weight: 600; }
+  .disclosure svg { width: 1.8rem; height: 1.8rem; color: var(--apteal-core); flex: none; margin-top: .2rem; }
+
+  /* --- Riktningar ------------------------------------------------------- */
+  .rule { border: 0; border-top: 1px solid rgba(9,11,50,.12); margin: var(--apspace-xl) 0; }
+  .kicker { display: inline-block; font-size: var(--aptext-xs); font-weight: 600; letter-spacing: .14em;
+            text-transform: uppercase; color: var(--apteal-core); margin-bottom: var(--apspace-3xs); }
+  .dir h2 { margin: 0 0 var(--apspace-3xs); font-size: var(--aptext-xl); font-weight: 600;
+            color: var(--apmidnight-blue); }
+  .dir .idea { margin: 0 0 var(--apspace-xs); max-width: 78ch; font-size: var(--aptext-m);
+               font-weight: 300; color: var(--apcharcoal-gray); }
+  .lock { margin: 0 0 var(--apspace-m); max-width: 78ch; font-size: var(--aptext-sm);
+          font-weight: 300; color: var(--apmidnight-blue); }
+  .lock b { font-weight: 600; }
+
+  .frames { display: grid; grid-template-columns: 860px 234px; gap: 24px; align-items: start; }
+  .well__label { display: flex; justify-content: space-between; align-items: baseline;
+                 font-size: var(--aptext-xs); letter-spacing: .1em; text-transform: uppercase;
+                 color: rgba(9,11,50,.55); margin-bottom: var(--apspace-3xs); }
+  .shellbox { border: 1px solid rgba(9,11,50,.14); border-radius: var(--apradius-m);
+              overflow: hidden; background: var(--apsky-mist);
+              box-shadow: 0 8px 24px rgba(9,11,50,.06); }
+  .scaler { overflow: hidden; }
+  .scaler > iframe { border: 0; display: block; transform-origin: top left; }
+  .scaler--desktop { width: 858px; height: 760px; }
+  .scaler--desktop > iframe { width: 1280px; height: 1134px; transform: scale(.6703); }
+  .scaler--mobile  { width: 232px; height: 520px; }
+  .scaler--mobile  > iframe { width: 390px; height: 874px; transform: scale(.5949); }
+
+  .open { display: inline-block; margin-top: var(--apspace-2xs); font-size: var(--aptext-s);
+          color: var(--apmidnight-blue); }
+
+  table.gaps { border-collapse: collapse; width: 100%; font-size: var(--aptext-sm); margin-top: var(--apspace-s); }
+  table.gaps th, table.gaps td { text-align: left; padding: 1rem 1.2rem;
+                                 border-bottom: 1px solid rgba(9,11,50,.1); vertical-align: top;
+                                 font-weight: 300; }
+  table.gaps th { font-size: var(--aptext-xs); letter-spacing: .1em; text-transform: uppercase;
+                  color: rgba(9,11,50,.55); font-weight: 600; }
+  table.gaps td:first-child { white-space: nowrap; font-weight: 600; color: var(--apmidnight-blue); }
+
+  @media (max-width: 1180px) {
+    .frames { grid-template-columns: 1fr; }
+    .scaler--desktop { width: 100%; max-width: 858px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top__inner">
+    <span class="badge">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
+      Ampy · uppdrag 06 · mockup
+    </span>
+    <h1>Före/efter-blocket, tre riktningar</h1>
+    <p>Ett rent bevisblock där riktiga före/efter-foton från Ampys egna jobb bär hela budskapet.
+      En H2, noll asks, designen talar. Alla tre riktningarna kör samma kanon och samma
+      produktionstokens; de skiljer sig i vad blocket ÄR, inte i färgsättning.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <p class="disclosure">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
+    <span><b>Om bilderna.</b> Varje bild här är en <b>illustration</b>, märkt som sådan i sitt eget
+    hörn. Ingen av dem är ett foto från ett riktigt Ampy-jobb, och ingen är AI-genererad.
+    Fotobiblioteket finns ännu inte: live-kollen 2026-08-16 gav noll före/efter-material på ampy.se.
+    Illustrationerna visar formen och konsistensregeln (samma ram, samma ljus, bara jobbet skiljer)
+    och ersätts av original ur bevismappen före publicering.</span>
+  </p>
+
+  <!-- ---------------------------------------------------------------- A -->
+  <section class="dir">
+    <span class="kicker">Riktning A</span>
+    <h2>Reglaget: ett par, dra för att se</h2>
+    <p class="idea">Interaktionen ÄR engagemanget: ett par i samma ram, sömmen dras dit besökaren vill.
+      Vilolaget står på 65/35 med EFTER dominant, så den som aldrig drar ändå ser utfallet.
+      Ärlig kostnad: ~95&nbsp;% ser bara vilolaget, och ingen av bilderna syns hel.</p>
+    <p class="lock"><b>Låses av:</b> GAP-A1, desktopaspekten. <b>Mockupen har ett svar:</b> 4:3 på
+      desktop beskär ett stående objekt sönder — hela toppen och botten av centralen försvinner ur
+      bild. Ramen kör därför 4:5 i alla lägen och smalnar i stället till 660&nbsp;px. Kvar för dig:
+      godkänn 4:5 som låst aspekt, eller be om 4:3 ändå.</p>
+    <div class="frames">
+      <div class="well">
+        <div class="well__label"><span>Desktop 1280</span><span>skala 67&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--desktop"><iframe src="a-reglaget.html" title="Riktning A, desktop"></iframe></div>
+        <a class="open" href="a-reglaget.html" target="_blank">Öppna i egen flik →</a>
+      </div>
+      <div class="well">
+        <div class="well__label"><span>Mobil 390</span><span>59&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--mobile"><iframe src="a-reglaget.html" title="Riktning A, mobil"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ------------------------------------------------------------ A no-JS -->
+  <section class="dir">
+    <span class="kicker">Riktning A · utan JavaScript</span>
+    <h2>Renderingskontraktet: samma markup, staplat par</h2>
+    <p class="idea">Identisk fil, bara utan <code>.js</code>-klassen och skriptet. Ingenting försvinner:
+      båda bilderna ligger helt i DOM, chipsen sitter kvar, bildtexten och finstilen står kvar.
+      Det är beviset på att reglaget är enhancement och inte grunden.</p>
+    <p class="lock"><b>Låses av:</b> inget ägarbeslut. Det här läget är ett krav (uppdrag §4.3), inte ett val.</p>
+    <div class="frames">
+      <div class="well">
+        <div class="well__label"><span>Desktop 1280</span><span>skala 67&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--desktop"><iframe src="a-reglaget-nojs.html" title="Riktning A utan JS, desktop"></iframe></div>
+        <a class="open" href="a-reglaget-nojs.html" target="_blank">Öppna i egen flik →</a>
+      </div>
+      <div class="well">
+        <div class="well__label"><span>Mobil 390</span><span>59&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--mobile"><iframe src="a-reglaget-nojs.html" title="Riktning A utan JS, mobil"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ---------------------------------------------------------------- B -->
+  <section class="dir">
+    <span class="kicker">Riktning B · research-teamets rekommenderade bas</span>
+    <h2>Bevisparet: jämsides, noll interaktion</h2>
+    <p class="idea">100&nbsp;% av informationen i vilolaget, för 100&nbsp;% av besökarna, med noll JavaScript.
+      Skannbarheten ÄR designen. Mobil staplar FÖRE över EFTER med en sömmarkör som pekar ut
+      berättelseriktningen. Ärlig kostnad: halva bildbredden per bild på desktop, inget wow-ögonblick.</p>
+    <p class="lock"><b>Låses av:</b> GAP-B1, lightbox vid tap eller inte. Ritad på fallbacken AV.</p>
+    <div class="frames">
+      <div class="well">
+        <div class="well__label"><span>Desktop 1280</span><span>skala 67&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--desktop"><iframe src="b-bevisparet.html" title="Riktning B, desktop"></iframe></div>
+        <a class="open" href="b-bevisparet.html" target="_blank">Öppna i egen flik →</a>
+      </div>
+      <div class="well">
+        <div class="well__label"><span>Mobil 390</span><span>59&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--mobile"><iframe src="b-bevisparet.html" title="Riktning B, mobil"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- ---------------------------------------------------------------- C -->
+  <section class="dir">
+    <span class="kicker">Riktning C</span>
+    <h2>Journalen: fallet som bevis, flera par</h2>
+    <p class="idea">Ett verkligt jobb berättat som ett fall: dominant par, faktakolumn i fackspråk med
+      riskraden om före-läget, och tre stödpar. Mest trovärdighet per kvadratcentimeter, och störst
+      innehållsskuld: fotoprotokollet måste leverera fyra par per tjänst i stället för ett.</p>
+    <p class="lock"><b>Låses av:</b> GAP-C1, stödparens mobilform. Båda ritade nedan; rekommendationen
+      är svep. Mätt på 390&nbsp;px: svep ger 1679&nbsp;px blockhöjd, stapel 2259&nbsp;px, alltså
+      580&nbsp;px mer skroll utan mer information.</p>
+    <div class="frames">
+      <div class="well">
+        <div class="well__label"><span>Desktop 1280</span><span>skala 67&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--desktop"><iframe src="c-journalen.html" title="Riktning C, desktop"></iframe></div>
+        <a class="open" href="c-journalen.html" target="_blank">Öppna i egen flik →</a>
+      </div>
+      <div class="well">
+        <div class="well__label"><span>Mobil 390 · svep</span><span>59&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--mobile"><iframe src="c-journalen.html" title="Riktning C, mobil med svep"></iframe></div>
+      </div>
+    </div>
+    <div class="frames" style="margin-top:var(--apspace-m)">
+      <div class="well">
+        <div class="well__label"><span>GAP-C1, variant B: stödparen staplade på mobil</span><span></span></div>
+        <a class="open" href="c-journalen-stapel.html" target="_blank" style="margin:0">Öppna i egen flik →</a>
+      </div>
+      <div class="well">
+        <div class="well__label"><span>Mobil 390 · stapel</span><span>59&nbsp;%</span></div>
+        <div class="shellbox scaler scaler--mobile"><iframe src="c-journalen-stapel.html" title="Riktning C, mobil med staplade stödpar"></iframe></div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <section class="dir">
+    <span class="kicker">Grindar</span>
+    <h2>Vad som låser vad</h2>
+    <table class="gaps">
+      <thead><tr><th>Grind</th><th>Fråga</th><th>Läge i mockupen</th></tr></thead>
+      <tbody>
+        <tr><td>GRIND 0</td><td>Fotobiblioteket finns inte (0 träffar live 2026-08-16)</td>
+            <td>Ritat med märkta illustrationer. Blockerar SHIP, inte design.</td></tr>
+        <tr><td>GAP-A1</td><td>Desktopaspekt för reglaget</td>
+            <td>Fallbacken 4:3 föll på test: den klipper bort centralens topp och botten. Mockupen kör
+            4:5 överallt, ram 660&nbsp;px. Väntar godkännande.</td></tr>
+        <tr><td>GAP-B1</td><td>Lightbox vid tap i B</td><td>AV (fallback). Inget tap-beteende ritat.</td></tr>
+        <tr><td>GAP-C1</td><td>Stödparens mobilform</td><td>Båda ritade. Rekommendation: svep.</td></tr>
+        <tr><td>GAP-8.1</td><td>Medgivanderaden i arbetsordern</td><td>Blockerar SHIP, inte design.</td></tr>
+        <tr><td>GAP-11.1</td><td>“Riktiga, oretuscherade bilder” kräver ägarintyg</td>
+            <td>Raden ritad. Skeppas inte osignerad.</td></tr>
+        <tr><td>GAP-11.2</td><td>Position 4 vs 5 i sidsekvensen</td><td>Blocket ritat fristående.</td></tr>
+        <tr><td>NY</td><td>Chipsens hörn: kanon §4.5 säger “samma hörn varje gång”, §6/B säger
+            FÖRE vänster / EFTER höger</td>
+            <td>B och C följer kanon (båda uppe till vänster). A tvingas spegla: chipsen kan inte
+            dela hörn i samma ram.</td></tr>
+        <tr><td>NY</td><td>Copyn är platshållare. <span style="color:rgba(9,11,50,.6)">[Ort]</span>,
+            <span style="color:rgba(9,11,50,.6)">[X]</span> och
+            <span style="color:rgba(9,11,50,.6)">[årtal]</span> är ACF-fält, inte text</td>
+            <td>Låses av ampy-rost + riktiga jobbdata. Inget hittas på.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+</div>
+</body>
+</html>

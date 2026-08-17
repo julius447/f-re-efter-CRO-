@@ -1,0 +1,486 @@
+/* ==========================================================================
+   FÖRE/EFTER-BLOCKET — MOCKUP (riktning A, B och C)
+   Strukturen är den ägargodkända wireframen; det här lagret är ytan.
+
+   Kanon som inte får brytas:
+   - 0 asks. Ingen knapp, ingen länk i blocket (uppdrag §4.1).
+   - EN H2. Ingen ingress, ingen eyebrow (§4.2).
+   - Båda bilderna som riktiga <img> med width/height, synliga utan JS (§4.3).
+   - Variationen bor i ACF, aldrig i mallen (§4.4).
+
+   Tokens: css/tokens.css (produktionsvärden ur live-CSS:en). 1rem = 10px.
+   Brytpunkter: 992 / 768 / 480. 380px är INGEN brytpunkt (§11.4).
+   ========================================================================== */
+
+:root {
+  /* Kortskuggan byggs i tre lager i stället för den platta --apshadow-l.
+     --shadow-primary saknas i produktion (§11.4) och definieras i tokens.css. */
+  --fe-shadow-card:
+    0 1px 2px rgba(9, 11, 50, 0.04),
+    0 8px 20px rgba(9, 11, 50, 0.06),
+    0 24px 48px rgba(9, 11, 50, 0.05);
+  --fe-shadow-chip: 0 2px 10px rgba(9, 11, 50, 0.22);
+  --fe-hairline: rgba(9, 11, 50, 0.10);
+  --fe-seam: rgba(9, 11, 50, 0.09);
+}
+
+/* --- Blockskal ----------------------------------------------------------- */
+.fe {
+  position: relative;
+  /* En viskning teal i överkanten — aurorafamiljen (§9.3), inte en gradient-vibb. */
+  background:
+    radial-gradient(120% 70% at 50% -12%, rgba(0, 169, 145, 0.055), transparent 62%),
+    var(--apsky-mist);
+  padding-block: var(--apspace-3xl);
+  padding-inline: var(--apspace-m);
+}
+.fe__inner {
+  max-width: var(--apmax-screen-width);
+  margin-inline: auto;
+}
+
+.fe__h2 {
+  margin: 0 0 var(--apspace-xl);
+  font-size: var(--aptext-2-5xl);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  color: var(--apmidnight-blue);
+  text-align: center;
+  text-wrap: balance;
+}
+/* Accenten är en understrykning, inte teal text: #00a991 mot vitt ger 2,97:1
+   och klarar inte 3:1 ens för stor text. */
+.fe__accent {
+  position: relative;
+  white-space: nowrap;
+}
+.fe__accent::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 0.02em;
+  height: 0.11em;
+  border-radius: var(--apradius-full);
+  background: linear-gradient(90deg, var(--apteal-core), rgba(0, 169, 145, 0.35));
+}
+
+/* --- Kort + par ---------------------------------------------------------- */
+.fe-card {
+  margin: 0;
+  background: #fff;
+  border-radius: var(--apradius-l);
+  box-shadow: var(--fe-shadow-card);
+  padding: var(--apspace-2xs) var(--apspace-2xs) var(--apspace-xs);
+  overflow: hidden;
+}
+
+.fe-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;                                  /* mittsömmen */
+  background: var(--fe-seam);
+  border-radius: calc(var(--apradius-m) + 2px);
+  overflow: hidden;
+}
+
+.fe-shot { position: relative; overflow: hidden; }
+.fe-shot > img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  background: #eaeef5;
+}
+/* Hårfin inre kant så bilden inte flyter ut i det vita kortet. */
+.fe-shot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 0 1px rgba(9, 11, 50, 0.06);
+  pointer-events: none;
+}
+
+/* --- Chips (FÖRE / EFTER) ------------------------------------------------ */
+.fe-chip {
+  position: absolute;
+  top: var(--apspace-xs);
+  left: var(--apspace-xs);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.72rem 1.5rem;
+  border-radius: var(--apradius-full);
+  font-size: var(--aptext-s);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: var(--fe-shadow-chip);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+.fe-chip--fore {
+  background: rgba(9, 11, 50, 0.78);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+.fe-chip--efter {
+  background: rgba(0, 169, 145, 0.95);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+}
+.fe-chip__bolt { width: 1.2rem; height: 1.2rem; flex: none; }
+.fe-chip--xs {
+  top: 0.9rem; left: 0.9rem;
+  padding: 0.45rem 1rem;
+  font-size: var(--aptext-xs);
+  gap: 0.4rem;
+}
+.fe-chip--xs .fe-chip__bolt { width: 1rem; height: 1rem; }
+/* Endast riktning A: chipsen delar ram och kan därför inte dela hörn. */
+.fe-chip--right { left: auto; right: var(--apspace-xs); }
+
+/* --- Bildtext + finstil -------------------------------------------------- */
+.fe-caption {
+  margin: var(--apspace-m) auto var(--apspace-2xs);
+  max-width: 64ch;
+  padding-inline: var(--apspace-xs);
+  text-align: center;
+  font-size: var(--aptext-ml);
+  font-weight: 300;
+  line-height: 1.4;
+  color: var(--apmidnight-blue);
+  text-wrap: balance;
+}
+.fe-caption strong { font-weight: 600; }
+.fe-caption .fe-dot {
+  display: inline-block;
+  color: var(--apteal-core);
+  padding-inline: 0.7rem;
+  transform: translateY(-0.1em);
+}
+.fe-caption .fe-field { color: rgba(9, 11, 50, 0.62); }
+
+.fe-fine {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  margin: var(--apspace-m) auto 0;
+  font-size: var(--aptext-s);
+  letter-spacing: 0.01em;
+  color: rgba(9, 11, 50, 0.58);
+}
+.fe-fine__bolt { width: 1.4rem; height: 1.4rem; color: var(--apteal-core); flex: none; }
+
+/* --- Sömmarkör (endast mobil, staplat läge) ------------------------------ */
+.fe-seam { display: none; }
+.fe-seam__badge {
+  width: 4rem;
+  height: 4rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(9, 11, 50, 0.22);
+  border: 1px solid rgba(0, 169, 145, 0.28);
+  display: grid;
+  place-items: center;
+  color: var(--apteal-core);
+}
+.fe-seam__badge svg { width: 1.9rem; height: 1.9rem; }
+
+@media (max-width: 768px) {
+  .fe { padding-block: var(--apspace-2xl); }
+  .fe__h2 { margin-bottom: var(--apspace-l); }
+  .fe-pair { grid-template-columns: 1fr; gap: 4px; }
+  .fe-seam {
+    display: grid;
+    place-items: center;
+    height: 0;
+    position: relative;
+    z-index: 3;
+    overflow: visible;
+  }
+  .fe-caption { font-size: var(--aptext-mm); }
+}
+
+/* ==========================================================================
+   RIKTNING A — REGLAGET
+   Signaturdetaljen: sömmen. Allt annat i ramen tjänar den.
+   ========================================================================== */
+/* GAP-A1: 4:3 på desktop beskär ett stående objekt sönder — hela toppen och
+   botten av centralen försvinner. Mockupen kör därför 4:5 i ALLA lägen och
+   smalnar ramen i stället. Det är rekommendationen till ägaren, inte fallbacken. */
+.fe-slider { max-width: 660px; margin: 0 auto; }
+
+.fe-frame {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--apradius-l);
+  overflow: hidden;
+  box-shadow: var(--fe-shadow-card);
+  background: #eaeef5;
+  touch-action: pan-y;                 /* vertikal scroll släpps ALLTID igenom */
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.fe-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(9, 11, 50, 0.07);
+  pointer-events: none;
+  z-index: 6;
+}
+.fe-layer { position: absolute; inset: 0; }
+.fe-layer > img { width: 100%; height: 100%; object-fit: cover; }
+.fe-layer--before { clip-path: inset(0 calc(100% - var(--fe-pos, 35%)) 0 0); }
+
+.fe-seamline {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: var(--fe-pos, 35%);
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(9, 11, 50, 0.18), 0 0 22px rgba(9, 11, 50, 0.28);
+  pointer-events: none;
+  z-index: 4;
+}
+.fe-handle {
+  position: absolute;
+  top: 50%;
+  left: var(--fe-pos, 35%);
+  transform: translate(-50%, -50%);
+  width: 5.2rem;                        /* träffyta ≥ 44px                     */
+  height: 5.2rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  box-shadow: 0 3px 16px rgba(9, 11, 50, 0.32);
+  display: grid;
+  place-items: center;
+  color: var(--apmidnight-blue);
+  pointer-events: none;
+  z-index: 5;
+}
+.fe-handle::before {
+  content: "";
+  position: absolute;
+  inset: -0.5rem;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+.fe-handle svg { width: 2.3rem; height: 2.3rem; }
+
+.fe-hint {
+  position: absolute;
+  /* följer sömmen men klamras så pillret aldrig klipps vid 0 % eller 100 % */
+  left: clamp(11rem, var(--fe-pos, 35%), calc(100% - 11rem));
+  top: calc(50% + 4.8rem);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.65rem 1.4rem;
+  border-radius: var(--apradius-full);
+  background: rgba(9, 11, 50, 0.82);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: var(--aptext-s);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 0.25s ease;
+}
+.fe-slider.is-touched .fe-hint { opacity: 0; }
+
+/* Reglaget sitter UNDER bilden så tummen aldrig skymmer sömmen. */
+.fe-range {
+  display: block;
+  width: 100%;
+  height: 4.4rem;
+  margin-top: var(--apspace-xs);
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: pan-y;
+}
+.fe-range::-webkit-slider-runnable-track {
+  height: 0.6rem;
+  border-radius: var(--apradius-full);
+  background: linear-gradient(90deg,
+    rgba(9, 11, 50, 0.22) 0 var(--fe-pos, 35%),
+    var(--apteal-core) var(--fe-pos, 35%) 100%);
+}
+.fe-range::-moz-range-track {
+  height: 0.6rem;
+  border-radius: var(--apradius-full);
+  background: linear-gradient(90deg,
+    rgba(9, 11, 50, 0.22) 0 var(--fe-pos, 35%),
+    var(--apteal-core) var(--fe-pos, 35%) 100%);
+}
+.fe-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 2.6rem; height: 2.6rem;
+  margin-top: -1rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  border: 2px solid var(--apmidnight-blue);
+  box-shadow: 0 2px 6px rgba(9, 11, 50, 0.3);
+}
+.fe-range::-moz-range-thumb {
+  width: 2.6rem; height: 2.6rem;
+  border-radius: var(--apradius-full);
+  background: #fff;
+  border: 2px solid var(--apmidnight-blue);
+  box-shadow: 0 2px 6px rgba(9, 11, 50, 0.3);
+}
+.fe-range:focus-visible { outline: 3px solid var(--apteal-core); outline-offset: 4px; }
+
+.fe-help {
+  margin: 0;
+  text-align: center;
+  font-size: var(--aptext-xs);
+  color: rgba(9, 11, 50, 0.52);
+}
+
+@media (max-width: 768px) {
+  .fe-handle { width: 4.6rem; height: 4.6rem; }
+}
+
+/* --- A utan JS: staplat par (renderingskontraktet, §4.3) ----------------- */
+html:not(.js) .fe-frame {
+  position: static;
+  aspect-ratio: auto;
+  display: grid;
+  gap: 4px;
+  background: var(--fe-seam);
+  cursor: auto;
+  box-shadow: var(--fe-shadow-card);
+}
+html:not(.js) .fe-frame::after { display: none; }
+html:not(.js) .fe-layer { position: relative; inset: auto; }
+html:not(.js) .fe-layer > img { height: auto; aspect-ratio: 4 / 5; }
+html:not(.js) .fe-layer--before { clip-path: none; order: -1; }
+html:not(.js) .fe-seamline,
+html:not(.js) .fe-handle,
+html:not(.js) .fe-hint,
+html:not(.js) .fe-range,
+html:not(.js) .fe-help { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .fe-hint { transition: none; }
+}
+
+/* ==========================================================================
+   RIKTNING C — JOURNALEN
+   Signaturdetaljen: faktakolumnen i fackspråk bredvid paret.
+   ========================================================================== */
+.fe-case {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 33rem;
+  gap: var(--apspace-xl);
+  align-items: start;
+}
+
+.fe-facts-col { padding-top: var(--apspace-2xs); }
+
+.fe-facts { margin: 0; }
+.fe-facts__row {
+  padding-block: var(--apspace-xs);
+  border-top: 1px solid var(--fe-hairline);
+}
+.fe-facts__row:first-child { border-top: 0; padding-top: 0; }
+.fe-facts dt {
+  font-size: var(--aptext-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--apteal-core);
+}
+.fe-facts dd {
+  margin: 0.6rem 0 0;
+  font-size: var(--aptext-m);
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--apmidnight-blue);
+}
+.fe-facts .fe-field { color: rgba(9, 11, 50, 0.62); }
+
+.fe-risk {
+  margin: var(--apspace-s) 0 0;
+  padding-top: var(--apspace-s);
+  border-top: 1px solid var(--fe-hairline);
+  font-size: var(--aptext-sm);
+  font-weight: 300;
+  line-height: 1.55;
+  color: var(--apmidnight-blue);
+}
+.fe-risk__label {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: var(--aptext-xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(9, 11, 50, 0.55);
+}
+
+/* Stödpar */
+.fe-support {
+  margin-top: var(--apspace-l);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--apspace-m);
+}
+.fe-support > figure { margin: 0; }
+.fe-support__pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  background: var(--fe-seam);
+  border-radius: var(--apradius-m);
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(9, 11, 50, 0.04),
+    0 6px 16px rgba(9, 11, 50, 0.06);
+}
+.fe-support__pair .fe-shot > img { aspect-ratio: 4 / 5; }
+.fe-support__cap {
+  margin: var(--apspace-xs) 0 0;
+  font-size: var(--aptext-s);
+  font-weight: 300;
+  line-height: 1.45;
+  color: rgba(9, 11, 50, 0.62);
+}
+
+@media (max-width: 992px) {
+  .fe-case { grid-template-columns: 1fr; gap: var(--apspace-l); }
+  .fe-support { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  /* GAP-C1, variant "stapel" */
+  .fe-support--stapel { grid-template-columns: 1fr; }
+
+  /* GAP-C1, variant "svep" — native scroll-snap, ingen JS-karusell */
+  .fe-support--svep {
+    display: flex;
+    gap: var(--apspace-s);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* utan denna snappar webbläsaren bort vänsterindraget vid inladdning */
+    scroll-padding-inline-start: var(--apspace-m);
+    -webkit-overflow-scrolling: touch;
+    padding-inline: var(--apspace-m);
+    padding-block-end: var(--apspace-3xs);
+    margin-inline: calc(var(--apspace-m) * -1);
+    scrollbar-width: none;
+  }
+  .fe-support--svep::-webkit-scrollbar { display: none; }
+  .fe-support--svep > * { flex: 0 0 76%; scroll-snap-align: start; }
+  .fe-support .fe-seam { display: none; }
+}

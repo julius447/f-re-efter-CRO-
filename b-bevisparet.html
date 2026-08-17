@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riktning B — Bevisparet · före/efter-blocket (mockup)</title>
+<script>if (window.self !== window.top) document.documentElement.className += " embedded";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/block.css">
+<link rel="stylesheet" href="css/shell.css">
+</head>
+<body>
+
+<p class="mockup-note">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
+  <span><b>Mockup.</b> Bilderna är illustrationer, inte foton från riktiga jobb. De ersätts av
+  original ur bevismappen före publicering.</span>
+</p>
+
+<!-- ==========================================================================
+     RIKTNING B — "BEVISPARET"
+     Jämsides, noll JavaScript. 100 % av informationen i vilolaget för 100 % av
+     besökarna. Mobil: staplat FÖRE → EFTER med sömmarkör.
+     0 asks: ingen knapp, ingen länk. Lightbox = GAP-B1, default AV.
+     ========================================================================== -->
+<section class="fe" aria-labelledby="fe-b-h2">
+  <div class="fe__inner">
+
+    <h2 class="fe__h2" id="fe-b-h2">
+      Så ser det ut när vi har <span class="fe__accent">bytt en elcentral</span>
+    </h2>
+
+    <figure class="fe-card">
+      <div class="fe-pair">
+
+        <div class="fe-shot">
+          <span class="fe-chip fe-chip--fore">Före</span>
+          <img src="img/dominant-fore.svg" width="800" height="1000" loading="lazy" decoding="async"
+               alt="Gammal elcentral med proppsäkringar före byte, villa i [Ort]">
+        </div>
+
+        <!-- Sömmarkör: syns bara i mobilens staplade läge -->
+        <div class="fe-seam" aria-hidden="true">
+          <span class="fe-seam__badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"
+                 stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+          </span>
+        </div>
+
+        <div class="fe-shot">
+          <span class="fe-chip fe-chip--efter">
+            <svg class="fe-chip__bolt" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
+            Efter
+          </span>
+          <img src="img/dominant-efter.svg" width="800" height="1000" loading="lazy" decoding="async"
+               alt="Ny elcentral med automatsäkringar och jordfelsbrytare efter byte av Ampy">
+        </div>
+
+      </div>
+
+      <figcaption class="fe-caption">
+        <strong>Från proppskåp till ny central med jordfelsbrytare</strong>
+        <span class="fe-dot" aria-hidden="true">·</span>
+        <span class="fe-field">Villa i [Ort]</span>
+      </figcaption>
+    </figure>
+
+    <p class="fe-fine">
+      <svg class="fe-fine__bolt" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
+      Riktiga, oretuscherade bilder från våra jobb.
+    </p>
+
+  </div>
+</section>
+
+</body>
+</html>

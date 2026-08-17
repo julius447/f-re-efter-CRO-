@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000" role="img">
+  <defs>
+    <pattern id="h" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="18" stroke="rgba(9,11,50,0.05)" stroke-width="7"/>
+    </pattern>
+  </defs>
+  <rect width="800" height="1000" fill="#e4e8f0"/>
+  <rect width="800" height="1000" fill="url(#h)"/>
+  <rect x="14" y="14" width="772" height="972" fill="none" stroke="rgba(9,11,50,0.28)" stroke-width="4" stroke-dasharray="16 14"/>
+  <rect x="170" y="380" width="490" height="230" rx="8" fill="none" stroke="rgba(9,11,50,0.38)" stroke-width="6"/>
+<line x1="196" y1="418" x2="634" y2="418" stroke="rgba(9,11,50,0.22)" stroke-width="6"/>
+<line x1="196" y1="470" x2="634" y2="470" stroke="rgba(9,11,50,0.22)" stroke-width="6"/>
+<line x1="196" y1="522" x2="634" y2="522" stroke="rgba(9,11,50,0.22)" stroke-width="6"/>
+<line x1="196" y1="574" x2="634" y2="574" stroke="rgba(9,11,50,0.22)" stroke-width="6"/>
+<rect x="240" y="394" width="18" height="202" rx="6" fill="none" stroke="#00a991" stroke-width="5"/>
+<rect x="360" y="394" width="18" height="202" rx="6" fill="none" stroke="#00a991" stroke-width="5"/>
+<rect x="480" y="394" width="18" height="202" rx="6" fill="none" stroke="#00a991" stroke-width="5"/>
+<rect x="600" y="394" width="18" height="202" rx="6" fill="none" stroke="#00a991" stroke-width="5"/>
+  <text x="400" y="120" font-family="Outfit, Arial, sans-serif" font-size="30" letter-spacing="6"
+        fill="rgba(9,11,50,0.45)" text-anchor="middle">PLATSHÅLLARE</text>
+  <text x="400" y="176" font-family="Outfit, Arial, sans-serif" font-size="48" font-weight="700"
+        letter-spacing="4" fill="#090b32" text-anchor="middle">EFTER</text>
+  <text x="400" y="882" font-family="Outfit, Arial, sans-serif" font-size="27" fill="rgba(9,11,50,0.62)" text-anchor="middle">Kabelränna monterad, kablarna buntade</text>
+  <text x="400" y="948" font-family="Outfit, Arial, sans-serif" font-size="24"
+        fill="rgba(9,11,50,0.40)" text-anchor="middle">4:5 · inget riktigt jobb · ersätts av foto ur bevismappen</text>
+</svg>

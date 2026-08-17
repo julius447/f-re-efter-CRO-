@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Riktning A — Reglaget · före/efter-blocket (wireframe)</title>
+<script>document.documentElement.className += " js";</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/block.css">
+</head>
+<body>
+
+<!-- ==========================================================================
+     RIKTNING A — "REGLAGET"
+     Ett par i samma ram; besökaren drar sömmen. Vilolaget 65/35 med EFTER
+     dominant. Reglaget är enhancement — utan JS staplas paret (a-reglaget-nojs.html).
+     0 asks: ingen knapp, ingen länk. Reglaget är mekaniken, inte en ask.
+     ========================================================================== -->
+<section class="fe" aria-labelledby="fe-a-h2">
+  <div class="fe__inner">
+
+    <h2 class="fe__h2" id="fe-a-h2">
+      Så ser det ut när vi har <span class="fe__accent">bytt en elcentral</span>
+    </h2>
+
+    <figure class="fe-slider">
+      <div class="fe-frame">
+
+        <!-- EFTER = basskiktet, alltid helt i DOM -->
+        <div class="fe-layer fe-layer--after">
+          <img src="img/dominant-efter.svg" width="800" height="1000" loading="lazy" decoding="async"
+               alt="Ny elcentral med automatsäkringar och jordfelsbrytare efter byte av Ampy">
+          <span class="fe-chip fe-chip--efter fe-chip--right">Efter</span>
+        </div>
+
+        <!-- FÖRE = överliggande skikt, klippt till sömmen. Chippen klipps med. -->
+        <div class="fe-layer fe-layer--before">
+          <img src="img/dominant-fore.svg" width="800" height="1000" loading="lazy" decoding="async"
+               alt="Gammal elcentral med proppsäkringar före byte, villa i [Ort]">
+          <span class="fe-chip fe-chip--fore">Före</span>
+        </div>
+
+        <div class="fe-seamline" aria-hidden="true"></div>
+        <div class="fe-handle" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+               stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l-6 6 6 6M15 6l6 6-6 6"/></svg>
+        </div>
+        <p class="fe-hint" aria-hidden="true">Dra för att jämföra</p>
+      </div>
+
+      <input class="fe-range" type="range" min="0" max="100" step="1" value="35"
+             aria-label="Dra för att jämföra före och efter">
+      <p class="fe-help">Dra reglaget, tryck var som helst i bilden, eller använd piltangenterna (±5 %).</p>
+
+      <figcaption class="fe-caption">
+        <strong>Från proppskåp till ny central med jordfelsbrytare</strong>
+        <span class="fe-dot" aria-hidden="true">·</span> Villa i [Ort]
+      </figcaption>
+    </figure>
+
+    <p class="fe-fine">Riktiga, oretuscherade bilder från våra jobb.</p>
+
+  </div>
+</section>
+
+<script src="js/reglage.js"></script>
+</body>
+</html>
