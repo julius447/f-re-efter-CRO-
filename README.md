@@ -69,7 +69,7 @@ python3 -m http.server 8763
 | GRIND 0 | Fotobiblioteket finns inte | Blockerar SHIP på alla sidor. Fotoprotokollet måste ut till montörerna. |
 | GAP-A1 | Desktopaspekt för reglaget | 4:3 testades och föll: den klipper bort centralens topp och botten. Mockupen kör 4:5 överallt. Väntar godkännande. |
 | GAP-B1 | Lightbox vid tap i B | AV. Inget tap-beteende ritat. |
-| GAP-C1 | Stödparens mobilform | Båda ritade. Rekommendation: svep (stapel kostar 580 px extra skroll utan mer information). |
+| GAP-C1 | Stödparens mobilform | Båda ritade. Rekommendation: svep (stapel kostar 578 px extra skroll utan mer information). |
 | GAP-8.1 | Medgivanderad i arbetsordern | Blockerar SHIP. |
 | GAP-11.1 | ”Riktiga, oretuscherade bilder” kräver ägarintyg | Raden ritad, skeppas inte osignerad. |
 | GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket ritat fristående. |
