@@ -1,77 +1,82 @@
-# Före/efter-blocket — tre riktningar (mockup)
+# Före/efter-blocket — riktning A, "Reglaget"
 
 Ampy uppdrag 06. Ett rent bevisblock där riktiga före/efter-foton från Ampys egna jobb bär hela
-budskapet: en H2, noll asks, designen talar. Blocket ska fungera på 22 tjänstesidor, dussintals
-programmatiska sidor och produktsidor — variationen bor i ACF, aldrig i mallen.
+budskapet: en H2, noll asks, designen talar. Ett par i samma ram — besökaren drar sömmen och ser
+förvandlingen ske i exakt den punkt hen väljer.
 
 **Live:** https://julius447.github.io/f-re-efter-CRO-/
+· [utan JavaScript](https://julius447.github.io/f-re-efter-CRO-/no-js.html)
+
+Riktning A valdes av ägaren 2026-08-17. B ("Bevisparet") och C ("Journalen") är avförda; de ligger
+kvar i `wireframes/` som historik och byggs inte vidare.
 
 ---
 
 ## Om bilderna — läs detta först
 
-Varje bild i repot är en **illustration**, märkt som sådan i sitt eget hörn. Ingen är ett foto från ett
-riktigt Ampy-jobb, och ingen är AI-genererad. Fotobiblioteket finns ännu inte: live-kollen 2026-08-16
-gav noll före/efter-material på ampy.se.
+Bilderna i repot är **illustrationer**, märkta som sådana i sitt eget hörn. Ingen är ett foto från
+ett riktigt Ampy-jobb, och ingen är AI-genererad. Fotobiblioteket finns ännu inte: live-kollen
+2026-08-16 gav noll före/efter-material på ampy.se.
 
-Illustrationerna finns för att visa **formen** och **konsistensregeln** (samma ram, samma ljus, bara
-jobbet skiljer). De ersätts av original ur bevismappen före publicering. Det är inte en formalitet:
-MFL 10 § lägger bevisbördan på Ampy, och en bild som inte visar det den påstår är otillbörlig
-marknadsföring oavsett hur bra den ser ut.
+De finns för att visa **formen** och **konsistensregeln** (samma ram, samma ljus, bara jobbet
+skiljer). De ersätts av original ur bevismappen före publicering, och blocket vägrar rendera ett par
+som inte är signerat.
 
-## De tre riktningarna
+## Vad som ligger var
 
-| Fil | Riktning | Kärnidé |
-|---|---|---|
-| `a-reglaget.html` | **A — Reglaget** | Ett par i samma ram; besökaren drar sömmen. Vilolaget 65/35 med EFTER dominant. |
-| `a-reglaget-nojs.html` | **A utan JS** | Samma markup utan skriptet: staplat par. Beviset på att reglaget är enhancement, inte grunden. |
-| `b-bevisparet.html` | **B — Bevisparet** | Jämsides, noll JavaScript. 100 % av informationen i vilolaget för 100 % av besökarna. |
-| `c-journalen.html` | **C — Journalen** | Fallet som bevis: dominant par + faktakolumn med riskrad + tre stödpar. Stödparen sveps på mobil. |
-| `c-journalen-stapel.html` | **C, variant** | Samma, men stödparen staplas på mobil (GAP-C1). |
-| `index.html` | Översikt | Alla fem i levande ramar, mobil 390 + desktop 1280, plus grindtabellen. |
-
-`wireframes/` innehåller fas 1 (wireframe-fasen) oförändrad, som referens.
+| Fil | Roll |
+|---|---|
+| `dist/01-fore-efter.css` | Blockets CSS → FluentSnippets, head |
+| `dist/02-fore-efter.php` | Shortcode `[ampy_fore_efter]` + markupmallen → FluentSnippets, frontend & backend |
+| `dist/03-fore-efter.js` | Reglaget → FluentSnippets, footer |
+| `index.html` | Förhandsgranskning. Genereras av `build.py` ur PHP-mallen, läser `dist/` |
+| `no-js.html` | Samma block utan skript: staplat par |
+| `build.py` | Packar förhandsgranskningen ur PHP-mallen (en sanning, ingen drift) |
+| `HANDOVER.md` | Vad Chris klistrar in var, ACF-fälten, bildkraven, mätningen |
+| `wireframes/` | Fas 1, oförändrad |
 
 ## Kanon som inte får brytas
 
-- **0 asks.** Ingen knapp, ingen länk i blocket. Sidbasens ask-tak (5) är fullt.
-- **EN H2.** Ingen ingress, ingen eyebrow-paragraf.
+- **0 asks.** Ingen knapp, ingen länk i blocket. Sidbasens ask-tak (5) är fullt, och blockets styrka
+  är just att det får ligga var som helst utan att röra budgeten.
+- **EN H2.** Ingen ingress, ingen eyebrow.
 - **Renderingskontraktet.** Båda bilderna som riktiga `<img>` med width/height, synliga utan JS.
-  Ingen enterView, ingen JS-injicerad src.
-- **Stående 4:5**, samma aspekt på båda bilderna (CLS + tillit).
-- **Variationen bor i ACF** (`fore_bild`, `efter_bild`, `jobbtyp`, `omfattning`, `omrade`, `riskrad`,
-  `signerad`), aldrig i mallen.
+  Ingen enterView, ingen JS-injicerad src. Reglaget är en enhancement, aldrig grunden.
+- **Stående 4:5**, samma aspekt på båda bilderna.
+- **Variationen bor i ACF**, aldrig i mallen. Samma block på 22 tjänstesidor.
 - **Endast riktiga Ampy-jobb.** Inga AI-bilder, ingen stock, ingen iscensättning, ingen retusch som
-  rör arbetets kvalitet.
+  rör arbetets kvalitet. Osignerat par → blocket renderar ingenting.
 
-## Teknik
+## Reglagets beteende
 
-Ren HTML och CSS. Ett enda skript (`js/reglage.js`, 60 rader) och bara för riktning A. Inga beroenden,
-inget byggsteg.
+| | |
+|---|---|
+| Viloläge | 35 % — EFTER dominant, så den som aldrig drar ändå ser utfallet |
+| Peka | tryck var som helst i ramen flyttar sömmen dit; drag följer fingret |
+| Tangentbord | piltangenter ±5 %, PageUp/PageDown ±10 %, Home/End |
+| Skärmläsare | reglaget säger "Efter syns till 65 procent", inte "35" |
+| Touch | `pan-y pinch-zoom` — vertikal scroll och nyp-zoom lever, vi rör aldrig touchmove |
+| Rörelse | 260 ms, under husets 300 ms-tak; engångsvinkning som lär ut mekaniken, avstängd vid `prefers-reduced-motion` |
+| Utan JS | staplat par via `<noscript>`, inget innehåll försvinner |
+| Utskrift | paret staplas — ett halvt foto är meningslöst på papper |
 
-- `css/tokens.css` — produktionstokens hämtade ur live-CSS:en på ampy.se (teal `#00a991`, midnatt
-  `#090b32`, sky-mist `#f5f9ff`, Outfit, `ap*`-skalan på `html{font-size:62.5%}`, 1rem=10px).
-  `--shadow-primary` definieras explicit; i produktion refereras den fem gånger utan att definieras.
-  `--apspace-4xs` används inte alls (malformad clamp i produktion).
-- `css/block.css` — blocket. Brytpunkter 992 / 768 / 480. 380px är ingen brytpunkt.
-- `css/shell.css` — endast förhandsgranskningens skal, följer inte med till Bricks.
+## Ägarbeslut som sitter i koden
 
-Kör lokalt:
-
-```bash
-python3 -m http.server 8763
-```
+| Beslut | Datum | Var |
+|---|---|---|
+| Riktning A vinner, B och C avförs | 2026-08-17 | hela repot |
+| Understrykningen under rubrikaccenten är svart, inte grön | 2026-08-17 | `.ampy-foreefter__accent::after` |
+| EFTER-chippet får en gladare grön: vårgrönt → smaragd med midnattstext | 2026-08-17 | `.ampy-foreefter__chip--efter` |
+| Den gröna punkten i bildtexten tas bort | 2026-08-17 | orten står på egen rad i stället |
+| Raden "Riktiga, oretuscherade bilder från våra jobb" tas bort | 2026-08-17 | borttagen; stänger samtidigt GAP-11.1 |
+| Aspekten är 4:5 även på desktop | 2026-08-17 | 4:3 klippte bort centralens topp och botten |
 
 ## Öppna grindar
 
 | Grind | Fråga | Läge |
 |---|---|---|
-| GRIND 0 | Fotobiblioteket finns inte | Blockerar SHIP på alla sidor. Fotoprotokollet måste ut till montörerna. |
-| GAP-A1 | Desktopaspekt för reglaget | 4:3 testades och föll: den klipper bort centralens topp och botten. Mockupen kör 4:5 överallt. Väntar godkännande. |
-| GAP-B1 | Lightbox vid tap i B | AV. Inget tap-beteende ritat. |
-| GAP-C1 | Stödparens mobilform | Båda ritade. Rekommendation: svep (stapel kostar 578 px extra skroll utan mer information). |
-| GAP-8.1 | Medgivanderad i arbetsordern | Blockerar SHIP. |
-| GAP-11.1 | ”Riktiga, oretuscherade bilder” kräver ägarintyg | Raden ritad, skeppas inte osignerad. |
-| GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket ritat fristående. |
-| Chipshörnen | Kanon §4.5 säger ”samma hörn varje gång”, §6/B säger FÖRE vänster / EFTER höger | B och C följer kanon. A tvingas spegla: chipsen kan inte dela hörn i samma ram. |
-| Copyn | `[Ort]`, `[X]`, `[årtal]` är ACF-fält, inte text | Låses av ampy-rost + riktiga jobbdata. Inget hittas på. |
+| **GRIND 0** | Fotobiblioteket finns inte | **Blockerar lansering.** Fotoprotokollet måste ut till montörerna. |
+| GAP-8.1 | Medgivanderad i arbetsordern | Blockerar lansering. |
+| GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket är byggt fristående. |
+| Bildtexten | Ska orten stå kvar när den gröna punkten är borta? | Står kvar på egen rad tills annat sägs. |
+| ACF | Fältgruppen finns inte i WordPress ännu | Se `HANDOVER.md` §2. |

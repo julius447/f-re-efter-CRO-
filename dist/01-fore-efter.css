@@ -1,0 +1,453 @@
+/* ==========================================================================
+   AMPY — FÖRE/EFTER-BLOCKET  ·  FluentSnippets: CSS  ·  placering: HEAD
+   --------------------------------------------------------------------------
+   Riktning A, "Reglaget". Produktionsversion.
+
+   Levererad enligt leveranskontraktet:
+   1  En wrapper, all BEM under .ampy-foreefter — inga generiska selektorer.
+   2  Tokens sitter på wrappern, aldrig på :root.
+   3  Inga globala resets. Ingen html{}, ingen body{}, ingen *{} utanför wrappern.
+   4  px, inte rem — blocket ärver aldrig värdinnans rotstorlek.
+   5  @container, inte viewport-@media — blocket mäter sin EGEN bredd och
+      överlever att Chris lägger det i en smal Bricks-kolumn.
+   7  Flera instanser på samma sida fungerar (JS är instansbunden).
+
+   Kanon: 0 asks (ingen knapp, ingen länk), EN H2, båda bilderna som riktiga
+   <img> med width/height, allt läsbart utan JS.
+   ========================================================================== */
+
+@property --ampyfe-pos {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 35%;
+}
+
+.ampy-foreefter {
+  /* --- Tokens (produktionsvärden, px) ----------------------------------- */
+  --ampyfe-teal: #00a991;
+  --ampyfe-midnatt: #090b32;
+  --ampyfe-mint: #55ff9a;
+  --ampyfe-smaragd: #39c281;
+  --ampyfe-dis: #f5f9ff;
+
+  --ampyfe-text-xs: clamp(10px, calc(0.21vw + 9.3px), 12px);
+  --ampyfe-text-s: clamp(12px, calc(0.21vw + 11.3px), 14px);
+  --ampyfe-text-m: clamp(16px, calc(0.21vw + 15.3px), 18px);
+  --ampyfe-text-ml: clamp(20px, calc(0.21vw + 19.3px), 22px);
+  --ampyfe-text-rubrik: clamp(28px, calc(1.25vw + 24px), 40px);
+
+  --ampyfe-space-2xs: clamp(8.2px, calc(0.18vw + 7.6px), 9.9px);
+  --ampyfe-space-xs: clamp(10.2px, calc(0.39vw + 9px), 14px);
+  --ampyfe-space-s: clamp(12.8px, calc(0.73vw + 10.5px), 19.8px);
+  --ampyfe-space-l: clamp(20px, calc(2.04vw + 13.5px), 39.6px);
+  --ampyfe-space-xl: clamp(25px, calc(3.23vw + 14.7px), 56px);
+  --ampyfe-space-3xl: clamp(39.1px, calc(7.59vw + 14.8px), 111.9px);
+
+  --ampyfe-radie-m: clamp(10px, calc(0.21vw + 9.3px), 12px);
+  --ampyfe-radie-l: clamp(16px, calc(0.42vw + 14.7px), 20px);
+  --ampyfe-radie-full: 9990px;
+
+  /* Produktionens --shadow-primary är odefinierad och faller tillbaka på rå
+     #bebebe. Blocket ärver inte den defekten utan bygger sin egen skugga. */
+  --ampyfe-skugga-kort:
+    0 1px 2px rgba(9, 11, 50, 0.04),
+    0 8px 20px rgba(9, 11, 50, 0.06),
+    0 24px 48px rgba(9, 11, 50, 0.05);
+
+  --ampyfe-ramtak: 660px;
+
+  container-type: inline-size;
+  container-name: ampyfe;
+
+  position: relative;
+  padding: var(--ampyfe-space-3xl) var(--ampyfe-space-s);
+  background:
+    radial-gradient(120% 70% at 50% -12%, rgba(0, 169, 145, 0.055), transparent 62%),
+    var(--ampyfe-dis);
+  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  font-weight: 300;
+  color: var(--ampyfe-midnatt);
+  -webkit-font-smoothing: antialiased;
+}
+
+.ampy-foreefter,
+.ampy-foreefter *,
+.ampy-foreefter *::before,
+.ampy-foreefter *::after { box-sizing: border-box; }
+
+.ampy-foreefter__inner {
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+/* --- Rubriken ------------------------------------------------------------ */
+.ampy-foreefter__rubrik {
+  margin: 0 0 var(--ampyfe-space-xl);
+  font-size: var(--ampyfe-text-rubrik);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.018em;
+  color: var(--ampyfe-midnatt);
+  text-align: center;
+  text-wrap: balance;
+}
+/* Understrykningen är svart (midnatt), inte teal — ägarbeslut 2026-08-17.
+   Den ligger som ::after i stället för text-decoration för att kunna sitta
+   på rätt avstånd och ha egna ändar. */
+.ampy-foreefter__accent {
+  position: relative;
+  white-space: nowrap;
+}
+.ampy-foreefter__accent::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.04em;
+  height: 0.075em;
+  border-radius: var(--ampyfe-radie-full);
+  background: var(--ampyfe-midnatt);
+}
+
+/* --- Figuren + ramen ----------------------------------------------------- */
+.ampy-foreefter__figur {
+  max-width: var(--ampyfe-ramtak);
+  margin: 0 auto;
+}
+
+.ampy-foreefter__ram {
+  position: relative;
+  aspect-ratio: 4 / 5;                 /* stående objekt, samma aspekt i båda */
+  border-radius: var(--ampyfe-radie-l);
+  overflow: hidden;
+  background: #eaeef5;
+  box-shadow: var(--ampyfe-skugga-kort);
+  /* pan-y släpper igenom vertikal scroll (Juxtapose-defekten), pinch-zoom
+     lämnar kvar zoomen för den som behöver den. Vi rör aldrig touchmove. */
+  touch-action: pan-y pinch-zoom;
+  cursor: ew-resize;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ampy-foreefter__ram::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(9, 11, 50, 0.07);
+  pointer-events: none;
+  z-index: 7;
+}
+/* Skärm bakom chipsen så de håller sig läsbara även mot en ljus, blixtrad
+   elcentralbild. Två små hörnradialer i stället för ett band tvärs över —
+   bandet syns som en grå rand på ljusa bilder, hörnen syns inte alls. */
+.ampy-foreefter__ram::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 132px;
+  background:
+    radial-gradient(120px 90px at 12% 0%, rgba(9, 11, 50, 0.22), transparent 72%),
+    radial-gradient(120px 90px at 88% 0%, rgba(9, 11, 50, 0.22), transparent 72%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.ampy-foreefter__lager {
+  position: absolute;
+  inset: 0;
+}
+.ampy-foreefter__lager > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ampy-foreefter__lager--fore {
+  clip-path: inset(0 calc(100% - var(--ampyfe-pos)) 0 0);
+  z-index: 2;
+}
+
+/* --- Sömmen -------------------------------------------------------------- */
+.ampy-foreefter__somlinje {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--ampyfe-pos);
+  width: 2px;
+  margin-left: -1px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgba(9, 11, 50, 0.18), 0 0 22px rgba(9, 11, 50, 0.28);
+  pointer-events: none;
+  z-index: 4;
+}
+
+.ampy-foreefter__handtag {
+  position: absolute;
+  top: 50%;
+  left: var(--ampyfe-pos);
+  transform: translate(-50%, -50%);
+  width: 52px;
+  height: 52px;
+  border-radius: var(--ampyfe-radie-full);
+  background: #fff;
+  box-shadow: 0 3px 16px rgba(9, 11, 50, 0.32);
+  display: grid;
+  place-items: center;
+  color: var(--ampyfe-midnatt);
+  pointer-events: none;
+  z-index: 6;
+}
+.ampy-foreefter__handtag::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+}
+.ampy-foreefter__handtag svg { width: 23px; height: 23px; }
+
+/* Reglaget har fokus → handtaget visar det, för handtaget är det man tittar på. */
+.ampy-foreefter__figur:has(.ampy-foreefter__reglage:focus-visible) .ampy-foreefter__handtag {
+  box-shadow: 0 3px 16px rgba(9, 11, 50, 0.32), 0 0 0 4px var(--ampyfe-teal);
+}
+
+.ampy-foreefter__ledtrad {
+  position: absolute;
+  /* följer sömmen men klamras så pillret aldrig klipps vid 0 % eller 100 % */
+  left: clamp(110px, var(--ampyfe-pos), calc(100% - 110px));
+  top: calc(50% + 48px);
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 7px 14px;
+  border-radius: var(--ampyfe-radie-full);
+  background: rgba(9, 11, 50, 0.82);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: var(--ampyfe-text-s);
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 6;
+  transition: opacity 0.25s ease;
+}
+.ampy-foreefter__figur.ar-vidrord .ampy-foreefter__ledtrad { opacity: 0; }
+
+/* --- Chips --------------------------------------------------------------- */
+.ampy-foreefter__chip {
+  position: absolute;
+  top: var(--ampyfe-space-xs);
+  left: var(--ampyfe-space-xs);
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 15px;
+  border-radius: var(--ampyfe-radie-full);
+  font-size: var(--ampyfe-text-s);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ampy-foreefter__chip--fore {
+  background: rgba(9, 11, 50, 0.82);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 2px 10px rgba(9, 11, 50, 0.22);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+/* EFTER-chippet bär blockets enda glädje: vårgrönt → smaragd med midnatt
+   text. Ägarbeslut 2026-08-17 — den flata tealen läste som mall-grönt.
+   Midnatt på #39c281 ger 7,1:1 och på #55ff9a 13:1, så texten håller hela
+   gradienten igenom. */
+.ampy-foreefter__chip--efter {
+  right: var(--ampyfe-space-xs);
+  left: auto;
+  background: linear-gradient(135deg, var(--ampyfe-mint) 0%, var(--ampyfe-smaragd) 100%);
+  color: var(--ampyfe-midnatt);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 2px 10px rgba(9, 11, 50, 0.24),
+    0 0 18px rgba(85, 255, 154, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+.ampy-foreefter__blixt { width: 13px; height: 13px; flex: none; }
+
+/* --- Reglaget ------------------------------------------------------------ */
+/* Spåret sitter UNDER bilden så tummen aldrig skymmer sömmen man siktar på. */
+.ampy-foreefter__reglage {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: var(--ampyfe-space-xs) 0 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: pan-y pinch-zoom;
+  cursor: ew-resize;
+}
+.ampy-foreefter__reglage::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: var(--ampyfe-radie-full);
+  background: linear-gradient(90deg,
+    rgba(9, 11, 50, 0.22) 0 var(--ampyfe-pos),
+    var(--ampyfe-teal) var(--ampyfe-pos) 100%);
+}
+.ampy-foreefter__reglage::-moz-range-track {
+  height: 6px;
+  border-radius: var(--ampyfe-radie-full);
+  background: linear-gradient(90deg,
+    rgba(9, 11, 50, 0.22) 0 var(--ampyfe-pos),
+    var(--ampyfe-teal) var(--ampyfe-pos) 100%);
+}
+.ampy-foreefter__reglage::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 26px;
+  margin-top: -10px;
+  border-radius: var(--ampyfe-radie-full);
+  background: #fff;
+  border: 2px solid var(--ampyfe-midnatt);
+  box-shadow: 0 2px 6px rgba(9, 11, 50, 0.3);
+  cursor: ew-resize;
+}
+.ampy-foreefter__reglage::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--ampyfe-radie-full);
+  background: #fff;
+  border: 2px solid var(--ampyfe-midnatt);
+  box-shadow: 0 2px 6px rgba(9, 11, 50, 0.3);
+  cursor: ew-resize;
+}
+.ampy-foreefter__reglage:focus { outline: none; }
+.ampy-foreefter__reglage:focus-visible {
+  outline: 3px solid var(--ampyfe-teal);
+  outline-offset: 4px;
+  border-radius: var(--ampyfe-radie-full);
+}
+
+/* --- Bildtexten ---------------------------------------------------------- */
+.ampy-foreefter__bildtext {
+  margin: var(--ampyfe-space-s) auto 0;
+  text-align: center;
+  text-wrap: balance;
+}
+.ampy-foreefter__omfattning {
+  display: block;
+  font-size: var(--ampyfe-text-ml);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ampyfe-midnatt);
+}
+.ampy-foreefter__plats {
+  display: block;
+  margin-top: 5px;
+  font-size: var(--ampyfe-text-m);
+  font-weight: 300;
+  line-height: 1.4;
+  color: rgba(9, 11, 50, 0.62);
+}
+
+/* Endast för skärmläsare. Instruktionen ska finnas, inte synas: sömmen,
+   handtaget och ledtråden bär affordansen visuellt. */
+.ampy-foreefter__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Mjuk förflyttning vid tangentbord, tryck och den engångsvinkning som
+       lär ut mekaniken. ALDRIG under drag: då ska sömmen sitta i fingret. -- */
+.ampy-foreefter__figur.ar-mjuk {
+  /* 260 ms — under husets 300 ms-tak. Rörelse som märks är en säljsignal. */
+  transition: --ampyfe-pos 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ==========================================================================
+   NO-JS — blocket måste vara helt läsbart utan skript (renderingskontraktet).
+   Markupen antar JS så att inget hoppar vid inladdning; <noscript> i PHP-filen
+   laddar i stället reglerna nedan och staplar paret.
+   ========================================================================== */
+.ampy-foreefter--nojs .ampy-foreefter__ram {
+  position: static;
+  aspect-ratio: auto;
+  display: grid;
+  gap: 4px;
+  background: rgba(9, 11, 50, 0.09);
+  cursor: auto;
+  touch-action: auto;
+}
+.ampy-foreefter--nojs .ampy-foreefter__ram::before,
+.ampy-foreefter--nojs .ampy-foreefter__ram::after { display: none; }
+.ampy-foreefter--nojs .ampy-foreefter__lager { position: relative; inset: auto; }
+.ampy-foreefter--nojs .ampy-foreefter__lager > img { height: auto; aspect-ratio: 4 / 5; }
+.ampy-foreefter--nojs .ampy-foreefter__lager--fore { clip-path: none; order: -1; }
+.ampy-foreefter--nojs .ampy-foreefter__chip { position: absolute; }
+.ampy-foreefter--nojs .ampy-foreefter__somlinje,
+.ampy-foreefter--nojs .ampy-foreefter__handtag,
+.ampy-foreefter--nojs .ampy-foreefter__ledtrad,
+.ampy-foreefter--nojs .ampy-foreefter__reglage { display: none; }
+
+/* ==========================================================================
+   Blocket mäter sin EGEN bredd, inte fönstrets. Ligger det i en halv Bricks-
+   kolumn på desktop beter det sig som på mobil — vilket är rätt.
+   ========================================================================== */
+@container ampyfe (max-width: 700px) {
+  .ampy-foreefter__handtag { width: 46px; height: 46px; }
+  .ampy-foreefter__handtag svg { width: 20px; height: 20px; }
+  .ampy-foreefter__ledtrad { top: calc(50% + 42px); }
+}
+
+@container ampyfe (max-width: 420px) {
+  .ampy-foreefter__chip { padding: 7px 12px; letter-spacing: 0.08em; }
+  .ampy-foreefter__ledtrad { left: clamp(96px, var(--ampyfe-pos), calc(100% - 96px)); }
+}
+
+/* --- Tillgänglighet och utskrift ---------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .ampy-foreefter__figur.ar-mjuk { transition: none; }
+  .ampy-foreefter__ledtrad { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ampy-foreefter__somlinje { background: CanvasText; box-shadow: none; }
+  .ampy-foreefter__handtag { border: 2px solid CanvasText; }
+  .ampy-foreefter__chip { border: 1px solid CanvasText; }
+}
+
+/* På papper finns inget reglage. Skriv ut paret staplat i stället för en
+   halv bild. */
+@media print {
+  .ampy-foreefter { background: none; padding-block: 0; }
+  .ampy-foreefter__ram {
+    position: static;
+    aspect-ratio: auto;
+    display: grid;
+    gap: 4px;
+    box-shadow: none;
+  }
+  .ampy-foreefter__ram::before,
+  .ampy-foreefter__ram::after { display: none; }
+  .ampy-foreefter__lager { position: relative; inset: auto; }
+  .ampy-foreefter__lager > img { height: auto; aspect-ratio: 4 / 5; }
+  .ampy-foreefter__lager--fore { clip-path: none; order: -1; }
+  .ampy-foreefter__somlinje,
+  .ampy-foreefter__handtag,
+  .ampy-foreefter__ledtrad,
+  .ampy-foreefter__reglage { display: none; }
+}
