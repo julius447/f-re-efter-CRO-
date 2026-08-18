@@ -33,9 +33,13 @@
   --ampyfe-text-s: clamp(12px, calc(0.21vw + 11.3px), 14px);
   --ampyfe-text-m: clamp(16px, calc(0.21vw + 15.3px), 18px);
   --ampyfe-text-ml: clamp(20px, calc(0.21vw + 19.3px), 22px);
-  /* Exakt temats globala H2: aptext-2-5xl. Inget eget line-height, ingen
-     egen letter-spacing — annars är den inte samma H2 som resten av sajten. */
-  --ampyfe-text-rubrik: clamp(28px, calc(1.25vw + 24px), 40px);
+  /* H2:an som sajten FAKTISKT renderar, mätt på ampy.se/elservice/elcentral/
+     2026-08-17: åtta av sexton H2:or (content-block, faq, services-loop,
+     visste-du-att, ce-block, footer-seo) kör alla var(--aptext-xl) / vikt 400 /
+     line-height 1,2 / letter-spacing normal.
+     Temats h2-regel säger aptext-2-5xl / 500, men i praktiken skriver varje
+     block över den — så temats default är fel mål. Det här är rätt mål. */
+  --ampyfe-text-rubrik: clamp(24px, calc(0.83vw + 21.3px), 32px);   /* = --aptext-xl */
 
   --ampyfe-space-2xs: clamp(8.2px, calc(0.18vw + 7.6px), 9.9px);
   --ampyfe-space-xs: clamp(10.2px, calc(0.39vw + 9px), 14px);
@@ -83,9 +87,11 @@
 /* --- Rubriken: identisk med sajtens globala H2 --------------------------- */
 .ampy-foreefter__rubrik {
   margin: 0 0 var(--ampyfe-space-l);
-  font-family: inherit;
+  font-family: inherit;                /* Outfit, ärvs från wrappern */
   font-size: var(--ampyfe-text-rubrik);
-  font-weight: 500;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: normal;
   color: var(--ampyfe-midnatt);
   text-align: center;
   text-wrap: balance;
@@ -354,7 +360,9 @@
 .ampy-foreefter__tagline {
   max-width: 62ch;
   margin: var(--ampyfe-space-l) auto 0;
-  font-size: var(--ampyfe-text-ml);
+  /* Ett steg över brödtexten (aptext-sm), ett tydligt steg under rubriken.
+     När H2:an gick från 40/500 till 32/400 låg taglinen på 22 px för nära. */
+  font-size: var(--ampyfe-text-m);
   font-weight: 400;
   line-height: 1.45;
   color: rgba(9, 11, 50, 0.78);
