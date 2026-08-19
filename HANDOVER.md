@@ -6,6 +6,14 @@ samma filer, den kopierar dem inte.
 
 ---
 
+## 0. Ordningen
+
+1. Klistra in de tre snippetsen (§1).
+2. Importera ACF-fältgruppen (§2).
+3. Kör Regenerate Thumbnails en gång (§3).
+4. Lägg shortcoden i ett Bricks Shortcode-element.
+5. Fyll fälten och kryssa **Signerad**. Först då syns blocket.
+
 ## 1. Klistra in
 
 | Fil | FluentSnippets-typ | Placering |
@@ -26,10 +34,15 @@ utan repeater går ett enstaka par att skicka in som attribut, t.ex.
 
 ## 2. ACF-fälten
 
+**Importera i stället för att bygga för hand:** `acf/ampy-foreefter-falt.json`
+→ ACF → Verktyg → Importera fältgrupper. Den innehåller alla fält nedan, med instruktionstexter
+för den som fyller i, och är kopplad till sidor. Vill du ha den på fler posttyper ändrar du
+platsregeln efter importen.
+
 Blocket visar **två par sida vid sida** på desktop och staplade på mobil. Varje par har sitt eget
 reglage.
 
-**På sidan (två fält):**
+**På sidan (tre fält):**
 
 | Fält | Typ | Krav | Exempel |
 |---|---|---|---|
@@ -79,11 +92,28 @@ Finns bara **ett** signerat par renderas det centrerat i stället för halvbrett
 Läggs fler än två rader in renderas de två första — layouten är byggd för ett eller två par, och
 det står i koden (`$MAX_PAR`) i stället för att tyst kapas.
 
-## 3. Bilderna
+## 3. Bilderna — så här blir riktiga foton kvadratiska
 
-- **Kvadratiska 1:1**, samma aspekt på båda. Olika aspekt ger både layouthopp och en
-  trovärdighetsläcka. Fotoprotokollet måste uppdateras: montören ska fota med så mycket marginal
-  att hela centralen ryms även när bilden beskärs till kvadrat.
+Snippeten registrerar två hårdbeskurna kvadratiska bildstorlekar:
+
+| Storlek | Mått | Roll |
+|---|---|---|
+| `ampy-foreefter` | 800 × 800, centrerad hårdbeskärning | den som blocket begär |
+| `ampy-foreefter-2x` | 1600 × 1600, centrerad hårdbeskärning | retinaledet i `srcset` |
+
+WordPress beskär alltså åt oss, med **samma kod på båda bilderna** — det är själva poängen. Låter
+man webbläsaren beskära i stället kan ett liggande före-foto och ett stående efter-foto få olika
+beskärning, och då faller konsistensregeln som hela tilliten vilar på.
+
+**Två storlekar, inte en:** WordPress bygger `srcset` enbart av bilder med samma bildförhållande.
+Med bara en kvadrat får en retinaskärm ingen skarpare fil.
+
+**Kör Regenerate Thumbnails en gång** efter att snippeten lagts in. Bilder som redan låg i
+mediabiblioteket saknar annars de nya storlekarna, och blocket faller tillbaka på fullstorlek —
+det fungerar, men bilden blir onödigt tung och beskärs av webbläsaren i stället.
+
+- Fotoprotokollet måste uppdateras: montören ska fota **med marginal runt om**, så hela centralen
+  ryms även efter en centrerad kvadratbeskärning.
 - **AVIF 30–80 kB per bild @1200w** (paret 100–200 kB, tak 300 kB). WordPress genererar `srcset`
   själv; blocket sätter `sizes="(max-width: 780px) 100vw, 620px"`.
 - `loading="lazy"` är avsiktligt: blocket ligger i beviszonen och ska aldrig vara sidans LCP.

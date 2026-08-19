@@ -1,0 +1,134 @@
+[
+    {
+        "key": "group_ampy_foreefter",
+        "title": "Före/efter-blocket",
+        "fields": [
+            {
+                "key": "field_ampy_fe_rubrik",
+                "label": "Rubrik",
+                "name": "rubrik",
+                "type": "text",
+                "instructions": "Första delen av H2:an, utan understrykning. Exempel: Så ser det ut när vi har",
+                "required": 1,
+                "default_value": "Så ser det ut när vi har"
+            },
+            {
+                "key": "field_ampy_fe_rubrik_accent",
+                "label": "Rubrik – understruken del",
+                "name": "rubrik_accent",
+                "type": "text",
+                "instructions": "Sista delen av H2:an. Den får den svarta understrykningen. Exempel: bytt en elcentral",
+                "required": 0
+            },
+            {
+                "key": "field_ampy_fe_tagline",
+                "label": "Tagline",
+                "name": "tagline",
+                "type": "text",
+                "instructions": "EN rad för hela blocket, unik per tjänst. Mönster: räkna upp vad jobbet faktiskt innehåller, avsluta med det som binder ihop två olika utgångslägen. Exempel: Ny elcentral, jordfelsbrytare och märkta grupper. Samma jobb oavsett hur det såg ut innan.",
+                "required": 0,
+                "maxlength": 160
+            },
+            {
+                "key": "field_ampy_fe_par",
+                "label": "Före/efter-par",
+                "name": "foreefter_par",
+                "type": "repeater",
+                "instructions": "Ett jobb per rad. Max två rader visas — de ligger sida vid sida på desktop och staplade på mobil. En rad som saknar bild, omfattning eller signering visas INTE.",
+                "required": 0,
+                "min": 0,
+                "max": 2,
+                "layout": "block",
+                "button_label": "Lägg till ett jobb",
+                "sub_fields": [
+                    {
+                        "key": "field_ampy_fe_fore_bild",
+                        "label": "Före-bild",
+                        "name": "fore_bild",
+                        "type": "image",
+                        "instructions": "Tagen INNAN arbetet påbörjades. Stå på samma punkt, samma ljus och samma avstånd som efter-bilden — det enda som får skilja är jobbet. Fota med marginal runt om: bilden hårdbeskärs till kvadrat.",
+                        "required": 1,
+                        "return_format": "array",
+                        "preview_size": "medium",
+                        "library": "all",
+                        "min_width": 800,
+                        "min_height": 800
+                    },
+                    {
+                        "key": "field_ampy_fe_efter_bild",
+                        "label": "Efter-bild",
+                        "name": "efter_bild",
+                        "type": "image",
+                        "instructions": "Samma punkt, samma ljus, samma avstånd som före-bilden. En lite rå efter-bild från samma punkt slår en polerad från en annan vinkel — den polerade läses som manipulation även när ingen skett.",
+                        "required": 1,
+                        "return_format": "array",
+                        "preview_size": "medium",
+                        "library": "all",
+                        "min_width": 800,
+                        "min_height": 800
+                    },
+                    {
+                        "key": "field_ampy_fe_omfattning",
+                        "label": "Omfattning",
+                        "name": "omfattning",
+                        "type": "text",
+                        "instructions": "Vad som faktiskt gjordes. Syns inte i blocket, men bär bildernas alt-text och reglagets namn för skärmläsare. Exempel: Från proppskåp till ny central med jordfelsbrytare",
+                        "required": 1
+                    },
+                    {
+                        "key": "field_ampy_fe_jobbtyp",
+                        "label": "Jobbtyp",
+                        "name": "jobbtyp",
+                        "type": "text",
+                        "instructions": "Kort benämning som används i alt-texten. Exempel: Byte av elcentral",
+                        "required": 0
+                    },
+                    {
+                        "key": "field_ampy_fe_fore_alt",
+                        "label": "Alt-text, före (frivillig)",
+                        "name": "fore_alt",
+                        "type": "text",
+                        "instructions": "Lämna tom så byggs den av jobbtyp och omfattning.",
+                        "required": 0
+                    },
+                    {
+                        "key": "field_ampy_fe_efter_alt",
+                        "label": "Alt-text, efter (frivillig)",
+                        "name": "efter_alt",
+                        "type": "text",
+                        "instructions": "Lämna tom så byggs den av jobbtyp och omfattning.",
+                        "required": 0
+                    },
+                    {
+                        "key": "field_ampy_fe_signerad",
+                        "label": "Signerad",
+                        "name": "signerad",
+                        "type": "true_false",
+                        "instructions": "Kryssa i först när montör eller ägare intygat att paret och omfattningen stämmer, och att bevismappen har originalen med EXIF, order-referens och kundmedgivande. Utan kryss visas raden inte alls. Det är avsiktligt: MFL 10 § lägger bevisbördan på Ampy.",
+                        "required": 0,
+                        "default_value": 0,
+                        "ui": 1,
+                        "ui_on_text": "Signerad",
+                        "ui_off_text": "Ej signerad"
+                    }
+                ]
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "post_type",
+                    "operator": "==",
+                    "value": "page"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "active": true,
+        "description": "Fälten som matar shortcoden [ampy_fore_efter]."
+    }
+]

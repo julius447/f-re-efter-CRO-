@@ -33,7 +33,9 @@ som inte är signerat.
 | `index.html` | Förhandsgranskning. Genereras av `build.py` ur PHP-mallen, läser `dist/` |
 | `no-js.html` | Samma block utan skript: staplade par |
 | `build.py` | Packar förhandsgranskningen ur PHP-mallen (en sanning, ingen drift) |
+| `acf/ampy-foreefter-falt.json` | ACF-fältgruppen, importeras rakt av — inget byggs för hand |
 | `HANDOVER.md` | Vad Chris klistrar in var, ACF-fälten, bildkraven, mätningen |
+| `KODGRANSKNING.md` | Kodgranskningen: nio rättade defekter, vad som kontrollerats, vad som inte gick att verifiera |
 | `wireframes/` | Fas 1, oförändrad |
 
 ## Kanon som inte får brytas
@@ -60,6 +62,9 @@ som inte är signerat.
 | Touch | `pan-y pinch-zoom` — vertikal scroll och nyp-zoom lever, vi rör aldrig touchmove |
 | Rörelse | 260 ms, under husets 300 ms-tak; engångsvinkning som lär ut mekaniken, avstängd vid `prefers-reduced-motion` |
 | Dragning | bilderna är `pointer-events: none` + `draggable="false"`, annars startar webbläsaren sin egen bilddragning |
+| Flera fingrar | draget ägs av en `pointerId`; en vilande tumme kan varken kapa eller frysa det |
+| Utanför ramen | draget följer med förbi kanten och släpps av `lostpointercapture` eller skyddsnätet på `window` |
+| Prestanda | sömmen skrivs högst en gång per bildruta (rAF-koalescering) |
 | Utan JS | staplat par via `<noscript>`, inget innehåll försvinner |
 | Chipsen | båda klipps av sömmen: dra helt åt vänster och FÖRE försvinner, helt åt höger och EFTER försvinner |
 | Utskrift | paren staplas — ett halvt foto är meningslöst på papper |
@@ -75,6 +80,7 @@ som inte är signerat.
 | Mörka skärmen bakom chipsen borttagen | 2026-08-17 | `__ram::before` struken |
 | EFTER-chippet: en plan färg, ingen gradient, ingen blixt | 2026-08-17 | `.ampy-foreefter__chip--efter` |
 | "Villa i [Ort]" borttagen ur bildtexten | 2026-08-17 | `__plats` struken |
+| ILLUSTRATION-taggen borttagen ur bilderna | 2026-08-17 | upplysningen bärs av remsan i förhandsgranskningen, utanför blocket |
 | Bildtexterna per par ersatta av EN semi-global tagline, unik per tjänst | 2026-08-17 | `.ampy-foreefter__tagline`, ACF-fält `tagline` |
 | EFTER-chippet klipps spegelvänt mot sömmen, så en dragning helt åt höger döljer det precis som en dragning helt åt vänster döljer FÖRE | 2026-08-17 | `.ampy-foreefter__chiplager` |
 | Understrykningen under rubrikaccenten är svart, inte grön | 2026-08-17 | `.ampy-foreefter__accent::after` |
@@ -89,4 +95,5 @@ som inte är signerat.
 | GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket är byggt fristående. |
 | ACF | Fältgruppen + repeatern finns inte i WordPress ännu | Se `HANDOVER.md` §2. |
 | Fotoprotokollet | Kvadratisk beskärning kräver att montören fotar med mer marginal | Protokollet måste uppdateras innan fotograferingen börjar. |
+| Bildoptimering | WordPress gör inte AVIF själv | Utan optimeringssteg spränger paret filbudgeten. |
 | iOS på riktig enhet | Testat i Blink (samma motor som Android/Chrome) + touch-emulering, **inte** i Safari/WebKit på enhet | Öppna live-länken på en iPhone och dra i båda reglagen. |

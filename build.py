@@ -50,6 +50,12 @@ NOTIS = """<p class="mockup-note">
 </p>"""
 
 
+def version(rel):
+    """Cache-buster ur filens mtime. Förhandsgranskningen ska ALDRIG kunna visa
+    en cachad äldre version av dist-filerna — då granskar man fel bytes."""
+    return str(int(os.path.getmtime(os.path.join(ROT, rel))))
+
+
 def klipp(php, start):
     trad = re.search(start + r".*?<<<'HTML'\n(.*?)\nHTML;", php, re.S)
     if not trad:
@@ -61,7 +67,7 @@ def bild(src, alt):
     return (
         '<img class="ampy-foreefter__bild" src="%s" width="1000" height="1000" '
         'loading="lazy" decoding="async" draggable="false" '
-        'sizes="(max-width: 780px) 100vw, 620px" alt="%s">' % (src, alt)
+        'sizes="(max-width: 719px) 94vw, 620px" alt="%s">' % (src, alt)
     )
 
 
@@ -108,7 +114,9 @@ def sida(titel, block, med_js, nojs_klass=False):
         block = block.replace(
             'class="ampy-foreefter"', 'class="ampy-foreefter ampy-foreefter--nojs"', 1
         )
-    skript = '<script src="dist/03-fore-efter.js" defer></script>' if med_js else ""
+    skript = ('<script src="dist/03-fore-efter.js?v=%s" defer></script>' % version("dist/03-fore-efter.js")) if med_js else ""
+    vcss = version("dist/01-fore-efter.css")
+    vcss_preview = version("css/preview.css")
     return f"""<!doctype html>
 <html lang="sv">
 <head>
@@ -119,8 +127,8 @@ def sida(titel, block, med_js, nojs_klass=False):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/preview.css">
-<link rel="stylesheet" href="dist/01-fore-efter.css">
+<link rel="stylesheet" href="css/preview.css?v={vcss_preview}">
+<link rel="stylesheet" href="dist/01-fore-efter.css?v={vcss}">
 </head>
 <body>
 

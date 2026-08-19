@@ -40,6 +40,26 @@
 
 if (!defined('ABSPATH')) { exit; }
 
+/**
+ * KVADRATISKA BILDSTORLEKAR — förutsättningen för att riktiga foton ska funka.
+ *
+ * Ramen är 1:1. Ett riktigt foto är 4:3 eller 3:4. Låter vi webbläsaren beskära
+ * med object-fit kan före- och efterbilden få OLIKA beskärning om de laddats upp
+ * i olika format — och då faller konsistensregeln, som är hela tillitsmekaniken.
+ * Därför låter vi WordPress hårdbeskära till kvadrat vid uppladdning: båda
+ * bilderna behandlas identiskt, av samma kod, varje gång.
+ *
+ * Två storlekar, inte en: WordPress bygger srcset enbart av bilder med SAMMA
+ * bildförhållande. Med bara en kvadrat får en retinaskärm ingen skarpare fil.
+ *
+ * Beskärningen är centrerad, vilket matchar fotoprotokollet: montören fotar
+ * centralen mitt i bild med marginal runt om.
+ */
+add_action('after_setup_theme', function () {
+	add_image_size('ampy-foreefter', 800, 800, array('center', 'center'));
+	add_image_size('ampy-foreefter-2x', 1600, 1600, array('center', 'center'));
+});
+
 add_shortcode('ampy_fore_efter', function ($atts) {
 
 	// Layouten är byggd för ett eller två par. Fler renderas inte — och det
@@ -84,9 +104,16 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 		));
 	}
 
+	/* ACF:s bildfält kan returnera array, ID eller URL beroende på hur fältet
+	   är inställt. Alla tre ska funka — annars renderas blocket tomt och ingen
+	   förstår varför. */
 	$bild_id = function ($varde) {
-		if (is_array($varde) && isset($varde['ID'])) { return (int) $varde['ID']; }
-		if (is_numeric($varde)) { return (int) $varde; }
+		if (is_array($varde) && isset($varde['ID']))    { return (int) $varde['ID']; }
+		if (is_array($varde) && isset($varde['id']))    { return (int) $varde['id']; }
+		if (is_numeric($varde))                          { return (int) $varde; }
+		if (is_string($varde) && $varde !== '' && function_exists('attachment_url_to_postid')) {
+			return (int) attachment_url_to_postid($varde);
+		}
 		return 0;
 	};
 	$sant = function ($varde) {
@@ -100,7 +127,7 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 		'loading'    => 'lazy',   // blocket ligger i beviszonen, aldrig som LCP
 		'decoding'   => 'async',
 		'draggable'  => 'false',  // annars startar webbläsaren sin egen bilddragning
-		'sizes'      => '(max-width: 780px) 100vw, 620px',
+		'sizes'      => '(max-width: 719px) 94vw, 620px',
 	);
 
 	/* AMPY-MALL-PAR-START */
@@ -167,9 +194,13 @@ HTML;
 		if ($fore_alt === '')  { $fore_alt  = $sak . ' — före'; }
 		if ($efter_alt === '') { $efter_alt = $sak . ' — efter, utfört av Ampy'; }
 
-		$fore_img = wp_get_attachment_image($fore_id, 'large', false,
+		/* 'ampy-foreefter' är den hårdbeskurna kvadraten. Finns den inte ännu
+		   (bilder uppladdade före snippeten) faller WordPress tillbaka på
+		   fullstorlek och webbläsaren beskär i stället — sämre, men aldrig
+		   trasigt. Kör Regenerate Thumbnails en gång så är det borta. */
+		$fore_img = wp_get_attachment_image($fore_id, 'ampy-foreefter', false,
 			array_merge($bild_attr, array('alt' => $fore_alt)));
-		$efter_img = wp_get_attachment_image($efter_id, 'large', false,
+		$efter_img = wp_get_attachment_image($efter_id, 'ampy-foreefter', false,
 			array_merge($bild_attr, array('alt' => $efter_alt)));
 		if (!$fore_img || !$efter_img) { continue; }
 

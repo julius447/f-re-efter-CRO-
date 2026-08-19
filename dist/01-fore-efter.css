@@ -417,7 +417,10 @@
 /* ==========================================================================
    Blocket och varje par mäter sin EGEN bredd, inte fönstrets.
    ========================================================================== */
-@container ampyfe (max-width: 780px) {
+/* 680 px innehållsruta, inte 780. En iPad i porträtt ger ~736 px och ska ha
+   två kolumner — en telefon i porträtt ger ~364 px och ska stapla. Mätt på
+   den verkliga innehållsrutan, inte på fönstret. */
+@container ampyfe (max-width: 680px) {
   .ampy-foreefter__par { grid-template-columns: 1fr; gap: var(--ampyfe-space-l); }
   .ampy-foreefter__figur:only-child { max-width: none; }
 }
@@ -437,7 +440,7 @@
    är en vanlig viewport-fråga och gäller BARA där @container saknas — kontraktets
    regel 5 står kvar för alla moderna webbläsare. */
 @supports not (container-type: inline-size) {
-  @media (max-width: 860px) {
+  @media (max-width: 720px) {
     .ampy-foreefter__par { grid-template-columns: 1fr; gap: var(--ampyfe-space-l); }
     .ampy-foreefter__figur:only-child { max-width: none; }
   }
