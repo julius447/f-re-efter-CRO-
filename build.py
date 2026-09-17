@@ -19,9 +19,9 @@ ROT = os.path.dirname(os.path.abspath(__file__))
 PHP = os.path.join(ROT, "dist", "02-fore-efter.php")
 
 # Riktiga foton från Ampys egna jobb, levererade av ägaren 2026-09-17 (fem
-# WhatsApp-zippar, EXIF redan borttaget av WhatsApp — ingen GPS). Beskurna EXAKT
-# som WordPress kommer att göra det: centrerad hårdbeskärning till kvadrat,
-# 800 + 1600 px. Ordningen är kvalitetsordning enligt konsistensregeln (samma
+# WhatsApp-zippar, EXIF redan borttaget av WhatsApp — ingen GPS). Bearbetade EXAKT
+# som WordPress kommer att göra det: 4:3 (telefonens format, ingen beskärning för
+# liggande foton), 1200 px + största tillgängliga upp till 2400 utan uppskalning. Ordningen är kvalitetsordning enligt konsistensregeln (samma
 # punkt, samma ljus): a och b är starkast, e svagast (före är mitt i rivningen).
 # Alt-texterna beskriver bara vad som syns i bild — inget om jobbet hittas på.
 ALLA_PAR = {
@@ -96,12 +96,18 @@ def klipp(php, start):
 
 def bild(bas, alt):
     """Speglar exakt vad wp_get_attachment_image(id, 'ampy-foreefter') ger:
-    src = 800-kvadraten, srcset = 800w + 1600w, width/height = 800."""
+    src = 1200×900, srcset = de varianter som faktiskt finns (WordPress skalar
+    aldrig upp, så ett 1600 px-foto får bara 1200-varianten), width/height = 1200×900."""
+    import glob as _g
+    kandidater = []
+    for fil in sorted(_g.glob(os.path.join(ROT, bas + "-*.jpg"))):
+        w = int(os.path.basename(fil).rsplit("-", 1)[1][:-4])
+        kandidater.append("%s-%d.jpg %dw" % (bas, w, w))
     return (
-        '<img class="ampy-foreefter__bild" src="%s-800.jpg" '
-        'srcset="%s-800.jpg 800w, %s-1600.jpg 1600w" '
-        'width="800" height="800" loading="lazy" decoding="async" draggable="false" '
-        'sizes="(max-width: 719px) 94vw, 620px" alt="%s">' % (bas, bas, bas, alt)
+        '<img class="ampy-foreefter__bild" src="%s-1200.jpg" '
+        'srcset="%s" '
+        'width="1200" height="900" loading="lazy" decoding="async" draggable="false" '
+        'sizes="(max-width: 719px) 94vw, 620px" alt="%s">' % (bas, ", ".join(kandidater), alt)
     )
 
 
@@ -112,7 +118,7 @@ def nojs_regler(ids):
         "background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}"
         + v + " .ampy-foreefter__ram::after{display:none}"
         + v + " .ampy-foreefter__lager{position:relative;inset:auto}"
-        + v + " .ampy-foreefter__lager>img{height:auto;aspect-ratio:1/1}"
+        + v + " .ampy-foreefter__lager>img{height:auto;aspect-ratio:4/3}"
         + v + " .ampy-foreefter__lager--fore{clip-path:none;order:-1}"
         + v + " .ampy-foreefter__somlinje," + v + " .ampy-foreefter__handtag,"
         + v + " .ampy-foreefter__ledtrad," + v + " .ampy-foreefter__reglage{display:none}"

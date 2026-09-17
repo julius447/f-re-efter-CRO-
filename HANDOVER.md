@@ -76,8 +76,8 @@ sant för varje jobb i den tjänsten — inte för det bästa.
 
 | Underfält | Typ | Krav | Exempel |
 |---|---|---|---|
-| `fore_bild` | Image | **Ja** | kvadratisk 1:1 |
-| `efter_bild` | Image | **Ja** | samma aspekt som `fore_bild` |
+| `fore_bild` | Image | **Ja** | liggande 4:3 (telefonens standard) |
+| `efter_bild` | Image | **Ja** | samma format som `fore_bild` |
 | `omfattning` | Text | **Ja** | `Från proppskåp till ny central med jordfelsbrytare` — syns inte längre i blocket, men bär alt-texten och reglagets namn för skärmläsare |
 | `jobbtyp` | Text | nej | `Byte av elcentral` — används i alt-texten |
 | `fore_alt` / `efter_alt` | Text | nej | egen alt-text; annars byggs den av fälten ovan |
@@ -92,34 +92,35 @@ Finns bara **ett** signerat par renderas det centrerat i stället för halvbrett
 Läggs fler än två rader in renderas de två första — layouten är byggd för ett eller två par, och
 det står i koden (`$MAX_PAR`) i stället för att tyst kapas.
 
-## 3. Bilderna — så här blir riktiga foton kvadratiska
+## 3. Bilderna — 4:3, som telefonen fotar
 
-Snippeten registrerar två hårdbeskurna kvadratiska bildstorlekar:
+Ramen är **4:3**, samma format som en telefonkamera. Ett liggande foto passar då exakt utan att en
+pixel beskärs. Det är hela poängen: ingen beskärning betyder ingen beskärningsskillnad mellan före
+och efter, och konsistensregeln (samma punkt, samma ljus) håller av sig själv.
+
+Snippeten registrerar två bildstorlekar i 4:3:
 
 | Storlek | Mått | Roll |
 |---|---|---|
-| `ampy-foreefter` | 800 × 800, centrerad hårdbeskärning | den som blocket begär |
-| `ampy-foreefter-2x` | 1600 × 1600, centrerad hårdbeskärning | retinaledet i `srcset` |
+| `ampy-foreefter` | 1200 × 900, centrerad hårdbeskärning | den som blocket begär |
+| `ampy-foreefter-2x` | 2400 × 1800, centrerad hårdbeskärning | retinaledet i `srcset` |
 
-WordPress beskär alltså åt oss, med **samma kod på båda bilderna** — det är själva poängen. Låter
-man webbläsaren beskära i stället kan ett liggande före-foto och ett stående efter-foto få olika
-beskärning, och då faller konsistensregeln som hela tilliten vilar på.
-
-**Två storlekar, inte en:** WordPress bygger `srcset` enbart av bilder med samma bildförhållande.
-Med bara en kvadrat får en retinaskärm ingen skarpare fil.
+Laddas ett foto upp i annat format (stående, panorama) hårdbeskär WordPress det centrerat till 4:3
+— med samma kod på båda bilderna. WordPress skalar aldrig upp: ett 1600 px-foto får bara
+1200-varianten, ett 2048 px-foto får båda. Två storlekar, inte en, eftersom `srcset` bara byggs av
+bilder med samma bildförhållande.
 
 **Kör Regenerate Thumbnails en gång** efter att snippeten lagts in. Bilder som redan låg i
-mediabiblioteket saknar annars de nya storlekarna, och blocket faller tillbaka på fullstorlek —
-det fungerar, men bilden blir onödigt tung och beskärs av webbläsaren i stället.
+mediabiblioteket saknar annars de nya storlekarna, och blocket faller tillbaka på fullstorlek.
 
-- Fotoprotokollet måste uppdateras: montören ska fota **med marginal runt om**, så hela centralen
-  ryms även efter en centrerad kvadratbeskärning.
-- **AVIF 30–80 kB per bild @1200w** (paret 100–200 kB, tak 300 kB). WordPress genererar `srcset`
-  själv; blocket sätter `sizes="(max-width: 780px) 100vw, 620px"`.
+- **Fotoprotokollet:** fota **liggande**, centralen mitt i bild, med luft runt om. Samma punkt,
+  samma ljus, samma avstånd på före och efter. En lite rå efter-bild från samma punkt slår en
+  polerad från en annan vinkel — den polerade läses som manipulation även när ingen skett.
+- **Filbudget: 30–80 kB per bild.** WordPress producerar inte AVIF av sig självt — det kräver ett
+  optimeringssteg (plugin eller CDN). De fem verkliga jobben ligger på 56–156 kB per 1200-variant
+  som JPEG 82, alltså över budget utan optimering. Blocket sätter
+  `sizes="(max-width: 719px) 94vw, 620px"`.
 - `loading="lazy"` är avsiktligt: blocket ligger i beviszonen och ska aldrig vara sidans LCP.
-- **Före- och efterbilden måste vara tagna från samma punkt, i samma ljus, med samma beskärning.**
-  Det enda som får skilja är jobbet. En lite rå efterbild från samma punkt slår en polerad från en
-  annan vinkel — den polerade läses som manipulation även när ingen skett.
 
 ## 4. Mätning
 

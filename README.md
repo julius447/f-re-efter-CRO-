@@ -17,8 +17,9 @@ kvar i `wireframes/` som historik och byggs inte vidare.
 
 Bilderna är **riktiga foton från Ampys egna jobb**, levererade av ägaren 2026-09-17 (fem
 WhatsApp-arkiv, fem jobb). WhatsApp hade redan tagit bort EXIF — ingen GPS, ingen kamerainfo —
-så de är säkra i ett publikt repo. Bearbetade exakt som WordPress kommer att göra det: centrerad
-hårdbeskärning till kvadrat, 800 och 1600 px, JPEG kvalitet 82, ingen EXIF skriven.
+så de är säkra i ett publikt repo. Bearbetade exakt som WordPress kommer att göra det: 4:3 (telefonens
+format — inget beskärs på ett liggande foto), 1200 px plus källstorlek upp till 2400 utan
+uppskalning, JPEG kvalitet 82, ingen EXIF skriven.
 
 **De är inte signerade i bevismapp ännu.** Det är grinden före publicering: originalfiler med EXIF,
 order-referens och kundmedgivande per par (MFL 10 §, omvänd bevisbörda). Blocket vägrar rendera ett
@@ -44,7 +45,7 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 | `dist/03-fore-efter.js` | Reglaget → FluentSnippets, footer |
 | `index.html` | Förhandsgranskning med de två starkaste paren. Genereras av `build.py` ur PHP-mallen, läser `dist/` |
 | `alla.html` | Alla fem jobben som tre block efter varandra |
-| `img/jobb/` | De riktiga fotona, kvadratiska 800 + 1600 px |
+| `img/jobb/` | De riktiga fotona i 4:3, 1200 px + källstorlek |
 | `no-js.html` | Samma block utan skript: staplade par |
 | `build.py` | Packar förhandsgranskningen ur PHP-mallen (en sanning, ingen drift) |
 | `acf/ampy-foreefter-falt.json` | ACF-fältgruppen, importeras rakt av — inget byggs för hand |
@@ -59,7 +60,7 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 - **EN H2.** Ingen ingress, ingen eyebrow.
 - **Renderingskontraktet.** Båda bilderna som riktiga `<img>` med width/height, synliga utan JS.
   Ingen enterView, ingen JS-injicerad src. Reglaget är en enhancement, aldrig grunden.
-- **Kvadratiska 1:1**, samma aspekt på båda bilderna.
+- **Liggande 4:3**, telefonens format, samma på båda bilderna. Inget beskärs.
 - **Variationen bor i ACF**, aldrig i mallen. Samma block på 22 tjänstesidor.
 - **Endast riktiga Ampy-jobb.** Inga AI-bilder, ingen stock, ingen iscensättning, ingen retusch som
   rör arbetets kvalitet. Osignerat par → blocket renderar ingenting.
@@ -89,7 +90,8 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 |---|---|---|
 | Riktning A vinner, B och C avförs | 2026-08-17 | hela repot |
 | Två par sida vid sida i stället för ett | 2026-08-17 | `.ampy-foreefter__par` |
-| Bilderna är kvadratiska, inte stående | 2026-08-17 | `aspect-ratio: 1 / 1` |
+| Bilderna är kvadratiska, inte stående | 2026-08-17 | ersatt 2026-09-17 |
+| Ramen är 4:3 — kvadraten beskar bort 25 % av varje foto och såg inzoomad ut | 2026-09-17 | `aspect-ratio: 4 / 3`, bildstorlekar 1200×900 + 2400×1800 |
 | H2:an är exakt sajtens globala H2 (aptext-2-5xl / 500, ingen egen line-height eller letter-spacing) | 2026-08-17 | `.ampy-foreefter__rubrik` |
 | Mörka skärmen bakom chipsen borttagen | 2026-08-17 | `__ram::before` struken |
 | EFTER-chippet: en plan färg, ingen gradient, ingen blixt | 2026-08-17 | `.ampy-foreefter__chip--efter` |
@@ -109,6 +111,6 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 | GAP-8.1 | Medgivanderad i arbetsordern | Blockerar lansering. |
 | GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket är byggt fristående. |
 | ACF | Fältgruppen + repeatern finns inte i WordPress ännu | Se `HANDOVER.md` §2. |
-| Fotoprotokollet | Kvadratisk beskärning kräver att montören fotar med mer marginal | Protokollet måste uppdateras innan fotograferingen börjar. |
+| Fotoprotokollet | Fota liggande, centralen mitt i bild, luft runt om | Protokollet till montörerna. |
 | Bildoptimering | WordPress gör inte AVIF själv | Utan optimeringssteg spränger paret filbudgeten. |
 | iOS på riktig enhet | Testat i Blink (samma motor som Android/Chrome) + touch-emulering, **inte** i Safari/WebKit på enhet | Öppna live-länken på en iPhone och dra i båda reglagen. |

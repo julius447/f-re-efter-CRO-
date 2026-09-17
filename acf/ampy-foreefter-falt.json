@@ -46,13 +46,13 @@
                         "label": "Före-bild",
                         "name": "fore_bild",
                         "type": "image",
-                        "instructions": "Tagen INNAN arbetet påbörjades. Stå på samma punkt, samma ljus och samma avstånd som efter-bilden — det enda som får skilja är jobbet. Fota med marginal runt om: bilden hårdbeskärs till kvadrat.",
+                        "instructions": "Tagen INNAN arbetet påbörjades. Stå på samma punkt, samma ljus och samma avstånd som efter-bilden — det enda som får skilja är jobbet. Fota liggande (4:3), centralen mitt i bild, med luft runt om.",
                         "required": 1,
                         "return_format": "array",
                         "preview_size": "medium",
                         "library": "all",
-                        "min_width": 800,
-                        "min_height": 800
+                        "min_width": 1200,
+                        "min_height": 900
                     },
                     {
                         "key": "field_ampy_fe_efter_bild",
@@ -64,8 +64,8 @@
                         "return_format": "array",
                         "preview_size": "medium",
                         "library": "all",
-                        "min_width": 800,
-                        "min_height": 800
+                        "min_width": 1200,
+                        "min_height": 900
                     },
                     {
                         "key": "field_ampy_fe_omfattning",

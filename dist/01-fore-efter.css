@@ -128,14 +128,18 @@
 /* Finns bara ett signerat par blir det inte halvbrett och ensamt — det
    centreras i stället. */
 .ampy-foreefter__figur:only-child {
-  max-width: 620px;
+  max-width: 760px;
   margin-inline: auto;
 }
 
 /* --- Ramen --------------------------------------------------------------- */
 .ampy-foreefter__ram {
   position: relative;
-  aspect-ratio: 1 / 1;
+  /* 4:3, inte 1:1. Telefoner fotar i 4:3; en kvadrat kastar bort 25 % av varje
+     foto och ser inzoomad ut. Med 4:3 visas hela bilden, ingenting beskärs, och
+     konsistensregeln blir automatisk (ingen beskärning = ingen beskärningsskillnad).
+     Ägarbeslut 2026-09-17 efter att riktiga foton lagts in. */
+  aspect-ratio: 4 / 3;
   border-radius: var(--ampyfe-radie-l);
   overflow: hidden;
   background: #eaeef5;
@@ -407,7 +411,7 @@
 }
 .ampy-foreefter--nojs .ampy-foreefter__ram::after { display: none; }
 .ampy-foreefter--nojs .ampy-foreefter__lager { position: relative; inset: auto; }
-.ampy-foreefter--nojs .ampy-foreefter__lager > img { height: auto; aspect-ratio: 1 / 1; }
+.ampy-foreefter--nojs .ampy-foreefter__lager > img { height: auto; aspect-ratio: 4 / 3; }
 .ampy-foreefter--nojs .ampy-foreefter__lager--fore { clip-path: none; order: -1; }
 .ampy-foreefter--nojs .ampy-foreefter__somlinje,
 .ampy-foreefter--nojs .ampy-foreefter__handtag,
@@ -481,7 +485,7 @@
   }
   .ampy-foreefter__ram::after { display: none; }
   .ampy-foreefter__lager { position: relative; inset: auto; }
-  .ampy-foreefter__lager > img { height: auto; aspect-ratio: 1 / 1; }
+  .ampy-foreefter__lager > img { height: auto; aspect-ratio: 4 / 3; }
   .ampy-foreefter__lager--fore { clip-path: none; order: -1; }
   .ampy-foreefter__somlinje,
   .ampy-foreefter__handtag,

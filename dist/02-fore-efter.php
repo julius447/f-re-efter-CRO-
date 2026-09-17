@@ -21,8 +21,8 @@
  *                                      bildtexterna per par (ägarbeslut 2026-08-17).
  *
  * REPEATER `foreefter_par` — en rad per jobb, max 2 renderas:
- *   fore_bild   image      OBLIGATORISK  kvadratisk 1:1
- *   efter_bild  image      OBLIGATORISK  samma aspekt som fore_bild
+ *   fore_bild   image      OBLIGATORISK  liggande 4:3 (telefonens standard)
+ *   efter_bild  image      OBLIGATORISK  samma format som fore_bild
  *   omfattning  text       OBLIGATORISK  "Från proppskåp till ny central med jordfelsbrytare"
  *                                     Syns INTE längre i blocket, men bär alt-texten
  *                                     och reglagets namn för skärmläsare — så den
@@ -41,23 +41,24 @@
 if (!defined('ABSPATH')) { exit; }
 
 /**
- * KVADRATISKA BILDSTORLEKAR — förutsättningen för att riktiga foton ska funka.
+ * BILDSTORLEKAR I 4:3 — förutsättningen för att riktiga foton ska funka.
  *
- * Ramen är 1:1. Ett riktigt foto är 4:3 eller 3:4. Låter vi webbläsaren beskära
- * med object-fit kan före- och efterbilden få OLIKA beskärning om de laddats upp
- * i olika format — och då faller konsistensregeln, som är hela tillitsmekaniken.
- * Därför låter vi WordPress hårdbeskära till kvadrat vid uppladdning: båda
- * bilderna behandlas identiskt, av samma kod, varje gång.
+ * Ramen är 4:3, samma som telefonkameran. Ett liggande foto passar då exakt
+ * utan att en pixel beskärs — det är hela poängen: ingen beskärning betyder
+ * ingen beskärningsskillnad mellan före och efter, och konsistensregeln (samma
+ * punkt, samma ljus) håller av sig själv. Laddas ett foto ändå upp i annat
+ * format hårdbeskär WordPress det centrerat till 4:3, med samma kod på båda
+ * bilderna. WordPress skalar aldrig upp: ett 1600 px-foto får bara 1200-
+ * varianten, ett 2048 px-foto får båda.
  *
  * Två storlekar, inte en: WordPress bygger srcset enbart av bilder med SAMMA
  * bildförhållande. Med bara en kvadrat får en retinaskärm ingen skarpare fil.
  *
- * Beskärningen är centrerad, vilket matchar fotoprotokollet: montören fotar
- * centralen mitt i bild med marginal runt om.
+ * Fotoprotokollet: fota liggande, centralen mitt i bild, med luft runt om.
  */
 add_action('after_setup_theme', function () {
-	add_image_size('ampy-foreefter', 800, 800, array('center', 'center'));
-	add_image_size('ampy-foreefter-2x', 1600, 1600, array('center', 'center'));
+	add_image_size('ampy-foreefter', 1200, 900, array('center', 'center'));
+	add_image_size('ampy-foreefter-2x', 2400, 1800, array('center', 'center'));
 });
 
 add_shortcode('ampy_fore_efter', function ($atts) {
@@ -194,7 +195,7 @@ HTML;
 		if ($fore_alt === '')  { $fore_alt  = $sak . ' — före'; }
 		if ($efter_alt === '') { $efter_alt = $sak . ' — efter, utfört av Ampy'; }
 
-		/* 'ampy-foreefter' är den hårdbeskurna kvadraten. Finns den inte ännu
+		/* 'ampy-foreefter' är 4:3-varianten (1200×900). Finns den inte ännu
 		   (bilder uppladdade före snippeten) faller WordPress tillbaka på
 		   fullstorlek och webbläsaren beskär i stället — sämre, men aldrig
 		   trasigt. Kör Regenerate Thumbnails en gång så är det borta. */
@@ -225,7 +226,7 @@ HTML;
 	$nojs = $v . ' .ampy-foreefter__ram{position:static;aspect-ratio:auto;display:grid;gap:4px;background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}'
 		. $v . ' .ampy-foreefter__ram::after{display:none}'
 		. $v . ' .ampy-foreefter__lager{position:relative;inset:auto}'
-		. $v . ' .ampy-foreefter__lager>img{height:auto;aspect-ratio:1/1}'
+		. $v . ' .ampy-foreefter__lager>img{height:auto;aspect-ratio:4/3}'
 		. $v . ' .ampy-foreefter__lager--fore{clip-path:none;order:-1}'
 		. $v . ' .ampy-foreefter__somlinje,' . $v . ' .ampy-foreefter__handtag,'
 		. $v . ' .ampy-foreefter__ledtrad,' . $v . ' .ampy-foreefter__reglage{display:none}';
