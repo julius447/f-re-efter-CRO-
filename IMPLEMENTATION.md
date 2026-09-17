@@ -10,8 +10,8 @@ must look and behave like on the site. Open it on your phone too.
 ## 1. What this is
 
 A proof block for the service pages. Two before/after photo pairs side by side (stacked on mobile),
-each with a draggable seam: the visitor drags to reveal the old panel or the new one. One H2 above,
-one tagline below. **No buttons, no links, no CTA — by design.** The page's ask budget is spent
+each with a draggable seam resting in the centre: the visitor drags to reveal the old panel or the
+new one. One H2 above. **No buttons, no links, no CTA — by design.** The page's ask budget is spent
 elsewhere; this block only proves.
 
 The variation lives in ACF. The template never changes per page.
@@ -42,7 +42,10 @@ drag on iPhone, Android and desktop, and the block looks identical to the live r
 | `dist/02-fore-efter.php` | image sizes + shortcode `[ampy_fore_efter]` + the markup template | FluentSnippets → **PHP** → **Frontend & Backend** |
 | `dist/03-fore-efter.js` | the slider | FluentSnippets → **JS** → **Footer** |
 | `acf/ampy-foreefter-falt.json` | the ACF field group | ACF → Tools → **Import** |
-| `img/jobb/*.jpg` | five real jobs, already processed to 4:3 at 1200 + source width | upload to Media (see §6) |
+| `images/elcentral-byte-NN-{fore,efter}.jpg` | the ten upload masters: five jobs, SEO filenames, highest available quality | upload to Media (§6) |
+| `images/manifest.csv` | filename → alt text, title, caption, dimensions, source | reference for the media library fields |
+| `images/wp-media-import.sh` | one WP-CLI command per image with alt/title/caption pre-filled | run once from the WordPress root (§4 step 6) |
+| `img/`, `index.html`, `alla.html`, `original.html`, `jamfor.html` | preview only — derived from the masters | do not upload |
 
 `index.html`, `alla.html`, `no-js.html` are previews generated from the PHP template by `build.py`.
 They reference `dist/` by link — they contain no copy of it. What you paste is what the preview shows.
@@ -92,16 +95,32 @@ browser instead of by WordPress.
 Verify: pick an uploaded image → `wp_get_attachment_image_src($id, 'ampy-foreefter')` returns a
 `…-1200x900.jpg` URL.
 
-### Step 6 — Place the block
+### Step 6 — Import the images
+From the WordPress root, with WP-CLI available:
+
+```bash
+bash images/wp-media-import.sh images
+```
+
+It imports the ten masters with alt text, title and caption already set (from `manifest.csv`) and
+prints one attachment ID per file. Note the IDs — they go into the repeater in step 8.
+
+No WP-CLI? Upload the files from `images/` through Media → Add New, then paste alt/title/caption
+from `manifest.csv` by hand. Run Regenerate Thumbnails afterwards if you uploaded before step 5.
+
+Verify: Media library shows ten images named `elcentral-byte-…`, each with alt text filled.
+
+### Step 7 — Place the block
 In Bricks, add a **Shortcode** element (not a Code element) where the block should sit — in the
 proof zone, after the content block, before Testimonials. Content: `[ampy_fore_efter]`.
 
 Verify: nothing renders yet. That is correct — no pair is signed (§5).
 
-### Step 7 — Fill the fields
+### Step 8 — Fill the fields
 On the page: Rubrik `Så ser det ut när vi har`, Rubrik – understruken del `bytt en elcentral`,
-Tagline (see §5), then add up to two rows in the repeater with before image, after image, Omfattning,
-and tick **Signerad**.
+leave Tagline empty, then add two rows in the repeater. For the elcentral page use jobs **01** and
+**02** (the strongest pairs): before = `elcentral-byte-01-fore`, after = `elcentral-byte-01-efter`,
+Omfattning `Byte av proppskåp till ny elcentral`, tick **Signerad**; then the same for 02.
 
 Verify: the block renders with both pairs. Drag both sliders. Compare against the live reference.
 
@@ -150,9 +169,31 @@ silent truncation).
 
 ## 6. Images
 
-**Format: landscape 4:3.** That is what a phone camera produces. A 4:3 photo fits the frame with
-zero cropping. Zero cropping means the before and after image can never be cropped differently —
-and identical framing is the entire trust mechanic of a before/after pair.
+### The masters in `images/`
+
+| File | Job | Source | Pixels | Notes |
+|---|---|---|---|---|
+| `elcentral-byte-01-fore.jpg` / `-efter.jpg` | blue backing board | owner's polished version, lossless PNG → JPEG q95 4:4:4 (one encode) | 1448 × 1086 | strongest pair — use on the elcentral page |
+| `elcentral-byte-02-fore.jpg` / `-efter.jpg` | orange wall | same | 1448 × 1086 | strongest pair — use on the elcentral page |
+| `elcentral-byte-03-…` | handwritten labels | WhatsApp JPEG, copied byte-for-byte | 1600 × 1200 (efter 1600 × 1139) | good |
+| `elcentral-byte-04-…` | conduit on white wall | same | 1600 × 1200 | good |
+| `elcentral-byte-05-…` | mid-demolition | same | 2048 × 1536 | weakest — before shows bare wires, not the old panel |
+
+"Highest possible quality" here means **the pixels were never touched more than necessary**: 01/02
+were encoded exactly once from a lossless source; 03–05 are the originals, byte for byte. No EXIF in
+any file (WhatsApp strips it; the encode writes none) — nothing to leak.
+
+Filenames are SEO-ready: lowercase, hyphenated, the service term first, pair number, side. No
+location in the name because none is verified — never add one that isn't.
+
+`manifest.csv` carries, per file: alt text, title and caption for the media library. The alt text
+describes only what is visible in the photo. The import script in §4 step 6 applies all of it.
+
+### Format: landscape 4:3
+
+That is what a phone camera produces. A 4:3 photo fits the frame with zero cropping. Zero cropping
+means the before and after image can never be cropped differently — and identical framing is the
+entire trust mechanic of a before/after pair.
 
 The PHP registers two sizes, both centre-cropped to 4:3 for anything uploaded in another format:
 
@@ -161,22 +202,29 @@ The PHP registers two sizes, both centre-cropped to 4:3 for anything uploaded in
 | `ampy-foreefter` | 1200 × 900 | the `src` the block requests |
 | `ampy-foreefter-2x` | 2400 × 1800 | retina candidate in `srcset` |
 
-WordPress never upscales: a 1600 px upload gets only the 1200 variant; a 2048 px upload gets both.
-Two sizes exist because WordPress builds `srcset` only from derivatives with the **same aspect ratio**.
+WordPress never upscales. Jobs 01/02 are 1448 px wide, so they get the 1200 size only — the 2x size
+is not generated for them and the browser uses the 1200 file on retina. That is the source ceiling,
+not a bug. Jobs 03–05 (1600/2048 px) are the same: only 05 comes close to the 2x size and still
+doesn't reach it. Two sizes are registered anyway because future photos shot on a phone at full
+resolution (3000–4000 px) will populate both.
 
-**The five real jobs in `img/jobb/`** are already processed exactly this way (4:3, no upscaling,
-JPEG q82, no EXIF). Upload the `-1200.jpg` files if you want WordPress to do its own processing, or
-upload the largest variant of each and let Regenerate Thumbnails produce the sizes. Pairs `a` and `b`
-are the strongest; `e` is the weakest (the before photo is mid-demolition).
+### File weight
 
-**File weight.** Budget is 30–80 kB per image. The processed JPEGs sit at 56–156 kB per 1200 px
-image — over budget. WordPress does not produce AVIF/WebP by itself; add an optimisation step (plugin
-or CDN). This is an ops item, not a code item.
+Masters are 120–570 kB; the 1200 × 900 derivative WordPress serves will land at roughly 100–180 kB
+as JPEG. The budget is 30–80 kB per image. WordPress does not produce AVIF/WebP by itself. Two ways
+to close the gap, both site-wide and therefore **your call, not part of this block**:
 
-**Loading.** `loading="lazy"`, `decoding="async"`, `sizes="(max-width: 719px) 94vw, 620px"`. The
-block sits in the proof zone and must never be the page's LCP.
+- a `image_editor_output_format` filter mapping `image/jpeg` → `image/webp` (WordPress 6.1+), or
+- an optimisation plugin / CDN that serves WebP/AVIF on the fly.
 
----
+### Loading and structured data
+
+`loading="lazy"`, `decoding="async"`, `sizes="(max-width: 719px) 94vw, 620px"`. The block sits in
+the proof zone and must never be the page's LCP.
+
+Each rendered block emits a JSON-LD `ImageGallery` with one `ImageObject` per image (`contentUrl` =
+full-size file, `name` = the alt text, `description` = Omfattning). It targets Google Images; expect
+long-tail, not a traffic line. Check Search Console → Performance → Search type: Image after launch.
 
 ## 7. Shortcode reference
 
@@ -202,7 +250,7 @@ For a quick test without ACF, every field can be passed as an attribute (single 
 
 | Aspect | Expected |
 |---|---|
-| Rest position | seam at 35 % from the left: AFTER dominant. A visitor who never drags still sees the result |
+| Rest position | seam centred at 50 %: half before, half after |
 | Drag | press anywhere in the frame → seam jumps there; drag follows the finger/pointer; continues past the frame edge |
 | Multi-touch | the first finger owns the drag; a resting thumb neither moves nor ends it |
 | Vertical scroll | a vertical swipe over the frame scrolls the page; pinch-zoom still works |
@@ -212,7 +260,7 @@ For a quick test without ACF, every field can be passed as an attribute (single 
 | Focus ring | shown only for keyboard focus. Pressing in the image never shows it |
 | Chips | FÖRE lives left of the seam, EFTER right of it. Dragging fully left hides FÖRE; fully right hides EFTER |
 | Hint pill "Dra för att jämföra" | fades after the first interaction; never clipped at 0 % or 100 % |
-| Nudge | once, when ≥55 % of the frame is visible: seam moves 35→48→35 %. Off under `prefers-reduced-motion` |
+| Nudge | once, when ≥55 % of the frame is visible: seam moves 50→63→50 %. Off under `prefers-reduced-motion` |
 | Screen reader | slider announces "Efter syns till N procent"; images have alt text; hint and handle are hidden from AT |
 | Layout | 2 columns when the block's own content box is >680 px (iPad portrait = 2 columns); 1 column below |
 | No JavaScript | `<noscript>` stacks the pair (before above after), both images whole, slider chrome hidden |
@@ -266,8 +314,9 @@ The block is built to a contract. Breaking any of these will be caught in review
   The slider is an enhancement; the content must survive without it.
 - **The H2 is the site's H2:** `--aptext-xl` (24→32 px), weight 400, line-height 1.2, Outfit, no
   letter-spacing. Measured on ampy.se, not taken from the theme's default rule.
-- **Illustrations, stock photos, AI images, or another firm's work are never allowed** in this block.
-  Only Ampy's own jobs, signed.
+- **Only Ampy's own jobs**, signed. No stock, no other firm's work.
+- **The JSON-LD stays inside the shortcode output.** It is built from the same IDs and alt texts as
+  the images, so it can never describe a photo that isn't on the page.
 
 ### If the markup must change
 The markup lives in one place: the two heredoc templates in `dist/02-fore-efter.php` between the
@@ -287,6 +336,8 @@ Never edit `index.html` by hand.
 | Dragging starts a browser image drag | old CSS cached — images must be `pointer-events: none` |
 | Two tiny frames side by side on an old iPhone | expected on iOS ≤15 only if the `@supports` fallback is missing — it is in the shipped CSS |
 | Wrong font | Outfit is not loaded by the theme on that page |
+| No `-2x` file in srcset | the source is narrower than 2400 px; WordPress never upscales. Expected for jobs 01–05 |
+| Import script prints an error about `wp` | WP-CLI missing from PATH; upload manually and copy fields from `manifest.csv` |
 | Block appears twice / IDs collide | each block instance increments a counter; if you render the shortcode inside a loop, IDs stay unique |
 | Loaded via AJAX and dead | call `window.ampyForeEfter.start()` after injecting |
 
@@ -309,5 +360,5 @@ Before ticking `signerad` on any pair, the evidence folder for that pair must co
 
 Swedish law (MFL 10 §) places the burden of proof on the advertiser. A pair without this folder is
 not published — the gate in the PHP enforces it, and the person ticking the box is the one attesting.
-The five jobs currently in `img/jobb/` were supplied by the owner on 2026-09-17 and are **not yet
-signed**.
+The five jobs in `images/` were supplied by the owner on 2026-09-17. Ticking `signerad` on a row is
+the owner's attestation that the folder above exists for that pair.

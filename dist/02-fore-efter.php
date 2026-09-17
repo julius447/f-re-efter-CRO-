@@ -168,9 +168,9 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 					<p class="ampy-foreefter__ledtrad" aria-hidden="true">Dra för att jämföra</p>
 				</div>
 
-				<input class="ampy-foreefter__reglage" type="range" min="0" max="100" step="1" value="35"
+				<input class="ampy-foreefter__reglage" type="range" min="0" max="100" step="1" value="50"
 				       aria-label="Jämför före och efter: {{OMFATTNING_ATTR}}" aria-describedby="{{ID}}-hjalp"
-				       aria-valuetext="Efter syns till 65 procent">
+				       aria-valuetext="Efter syns till 50 procent">
 				<p class="ampy-foreefter__sr" id="{{ID}}-hjalp">Dra reglaget för att jämföra före och efter. Du kan också trycka var som helst i bilden, eller använda piltangenterna.</p>
 			</figure>
 HTML;
@@ -178,6 +178,7 @@ HTML;
 
 	$par_html = '';
 	$par_ids = array();
+	$schema_bilder = array();
 
 	foreach ($rader as $rad) {
 		if (count($par_ids) >= $MAX_PAR) { break; }
@@ -216,6 +217,21 @@ HTML;
 		$id = 'ampy-foreefter-' . $rakning;
 		$par_ids[] = $id;
 
+		// Strukturerad data för bildsök: ett ImageObject per bild, med samma
+		// alt-text som bilden bär. Fullstorleksfilen är contentUrl.
+		foreach (array(array($fore_id, $fore_alt), array($efter_id, $efter_alt)) as $b) {
+			$src = wp_get_attachment_image_src($b[0], 'full');
+			if (!$src) { continue; }
+			$schema_bilder[] = array(
+				'@type'       => 'ImageObject',
+				'contentUrl'  => $src[0],
+				'width'       => (int) $src[1],
+				'height'      => (int) $src[2],
+				'name'        => $b[1],
+				'description' => $omfattning,
+			);
+		}
+
 		$par_html .= strtr($mall_par, array(
 			'{{ID}}'               => esc_attr($id),
 			'{{EFTER_IMG}}'        => $efter_img,
@@ -250,6 +266,19 @@ HTML;
 
 	$rubrik_id = 'ampy-foreefter-rubrik-' . count($par_ids) . '-' . $rakning;
 
+	$schema_html = '';
+	if ($schema_bilder) {
+		$schema = array(
+			'@context' => 'https://schema.org',
+			'@type'    => 'ImageGallery',
+			'name'     => trim($rubrik . ' ' . $accent),
+			'image'    => $schema_bilder,
+		);
+		$schema_html = "\n\t<script type=\"application/ld+json\">"
+			. wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+			. '</script>';
+	}
+
 	/* AMPY-MALL-YTTRE-START — index.html byggs ur exakt den här strängen
 	   (build.py), så det som godkänns i förhandsgranskningen är samma element
 	   som WordPress skickar ut. */
@@ -264,7 +293,7 @@ HTML;
 		<div class="ampy-foreefter__par">
 {{PAR}}		</div>{{TAGLINE}}
 
-	</div>
+	</div>{{SCHEMA}}
 </section>
 HTML;
 	/* AMPY-MALL-YTTRE-SLUT */
@@ -276,5 +305,6 @@ HTML;
 		'{{ACCENT}}'    => $accent_del,
 		'{{PAR}}'       => $par_html,
 		'{{TAGLINE}}'   => $tagline_rad,
+		'{{SCHEMA}}'    => $schema_html,
 	));
 });

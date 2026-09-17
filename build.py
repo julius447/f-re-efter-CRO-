@@ -108,6 +108,24 @@ def bild(bas, alt):
     )
 
 
+def schema(par_lista):
+    """Samma JSON-LD som PHP:n skickar ut, med förhandsgranskningens sökvägar."""
+    import json, glob as _g
+    bilder = []
+    for p in par_lista:
+        for sida in ("fore", "efter"):
+            bas, alt = p[sida]
+            storsta = sorted(_g.glob(os.path.join(ROT, bas + "-*.jpg")),
+                             key=lambda f: int(os.path.basename(f).rsplit("-", 1)[1][:-4]))[-1]
+            w = int(os.path.basename(storsta).rsplit("-", 1)[1][:-4])
+            bilder.append({"@type": "ImageObject", "contentUrl": os.path.relpath(storsta, ROT),
+                           "width": w, "height": int(round(w * 3 / 4)),
+                           "name": alt, "description": p["omfattning"]})
+    d = {"@context": "https://schema.org", "@type": "ImageGallery",
+         "name": "Så ser det ut när vi har bytt en elcentral", "image": bilder}
+    return '\n\t<script type="application/ld+json">' + json.dumps(d, ensure_ascii=False) + "</script>"
+
+
 def nojs_regler(ids):
     v = ", ".join("#" + i for i in ids)
     return (
@@ -142,6 +160,7 @@ def blocket(php, par_lista, rubrik_id):
     for nyckel, varde in YTTRE.items():
         ut = ut.replace(nyckel, varde)
     ut = ut.replace("{{RUBRIK_ID}}", rubrik_id)
+    ut = ut.replace("{{SCHEMA}}", schema(par_lista))
     ut = ut.replace("{{NOJS}}", nojs_regler([p["id"] for p in par_lista]))
     ut = ut.replace("{{PAR}}", par_html)
     return ut

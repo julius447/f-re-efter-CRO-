@@ -19,7 +19,7 @@
 @property --ampyfe-pos {
   syntax: "<percentage>";
   inherits: true;
-  initial-value: 35%;
+  initial-value: 50%;
 }
 
 .ampy-foreefter {

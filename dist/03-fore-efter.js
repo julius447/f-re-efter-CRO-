@@ -2,11 +2,11 @@
    AMPY — FÖRE/EFTER-BLOCKET  ·  FluentSnippets: JS  ·  placering: FOOTER
    --------------------------------------------------------------------------
    Reglaget är en enhancement. Utan den här filen står blocket kvar med båda
-   bilderna i DOM och sömmen på 35 % — inget innehåll går förlorat, och
+   bilderna i DOM och sömmen på 50 % — inget innehåll går förlorat, och
    <noscript> i PHP-filen staplar paret för den som kört utan skript.
 
    Bindande beteende:
-   - Vilolaget 35 % (EFTER dominant). Den som aldrig drar ser ändå utfallet.
+   - Vilolaget 50 %: sömmen mitt i bilden, lika mycket före som efter.
    - Endast horisontell capture. Vi rör ALDRIG touchmove och kallar aldrig
      preventDefault på den — vertikal scroll och nyp-zoom lever (Juxtapose #148).
    - Tryck var som helst i ramen flyttar sömmen dit.
@@ -29,7 +29,7 @@
 (function () {
   "use strict";
 
-  var VILOLAGE = 35;
+  var VILOLAGE = 50;   // sömmen mitt i bilden — ägarbeslut 2026-09-17
   var STEG_PIL = 5;
   var STEG_SIDA = 10;
 
@@ -239,7 +239,7 @@
 
     /* Startläget läses ur reglaget, inte ur konstanten. Firefox och Chrome
        återställer formulärvärden vid mjuk omladdning och bakåtnavigering; då
-       ska sömmen hamna där tummen står, inte på 35 % med tummen någon annanstans. */
+       ska sömmen hamna där tummen står, inte på 50 % med tummen någon annanstans. */
     var start = parseFloat(reglage.value);
     satt(isFinite(start) ? start : VILOLAGE, false);
   }
