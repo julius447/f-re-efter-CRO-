@@ -53,13 +53,13 @@ ALLA_PAR = {
 }
 
 
-def par(nyckel, idnr):
+def par(nyckel, idnr, mapp="img/jobb"):
     d = ALLA_PAR[nyckel]
     return {
         "id": "ampy-foreefter-%d" % idnr,
         "omfattning": d["omfattning"],
-        "fore":  ("img/jobb/%s-fore" % nyckel,  d["fore_alt"]),
-        "efter": ("img/jobb/%s-efter" % nyckel, d["efter_alt"]),
+        "fore":  ("%s/%s-fore" % (mapp, nyckel),  d["fore_alt"]),
+        "efter": ("%s/%s-efter" % (mapp, nyckel), d["efter_alt"]),
     }
 
 
@@ -69,8 +69,10 @@ PAR = [par("jobb-a", 1), par("jobb-b", 2)]
 YTTRE = {
     "{{RUBRIK}}": "Så ser det ut när vi har",
     "{{ACCENT}}": ' <span class="ampy-foreefter__accent">bytt en elcentral</span>',
-    # Semi-global tagline: samma mönster på alla tjänstesidor, egen text per tjänst.
-    "{{TAGLINE}}": '\n\t\t<p class="ampy-foreefter__tagline">Ny elcentral, jordfelsbrytare '
+    # Tagline: tom — ägarbeslut 2026-09-17. Fältet finns kvar som frivilligt i
+    # ACF; är det tomt renderas ingenting.
+    "{{TAGLINE}}": "",
+}}": '\n\t\t<p class="ampy-foreefter__tagline">Ny elcentral, jordfelsbrytare '
                    'och märkta grupper. Samma jobb oavsett hur det såg ut innan.</p>',
 }
 
@@ -180,13 +182,55 @@ def sida(titel, block, med_js, nojs_klass=False):
 """
 
 
+JAMFOR = """<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A/B — original mot polerade bilder</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #fff; font-family: "Outfit", -apple-system, sans-serif; color: #090b32; }
+  .rad { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; }
+  .kol h2 { margin: 0 0 8px; font-size: 18px; font-weight: 500; }
+  .kol p { margin: 0 0 12px; font-size: 14px; font-weight: 300; color: rgba(9,11,50,.7); }
+  .kol a { color: #090b32; font-size: 13px; }
+  .ram { border: 1px solid rgba(9,11,50,.14); border-radius: 12px; overflow: hidden; background: #f5f9ff; }
+  .ram iframe { border: 0; display: block; width: 100%; height: 720px; }
+  @media (max-width: 900px) { .rad { grid-template-columns: 1fr; } .ram iframe { height: 1180px; } }
+</style>
+</head>
+<body>
+<div class="rad">
+  <div class="kol">
+    <h2>A — originalen</h2>
+    <p>WhatsApp-fotona som elektrikerna skickade, obearbetade.</p>
+    <div class="ram"><iframe src="original.html" title="Original"></iframe></div>
+    <a href="original.html" target="_blank">Öppna i egen flik →</a>
+  </div>
+  <div class="kol">
+    <h2>B — polerade</h2>
+    <p>Samma jobb, ägarens polerade versioner.</p>
+    <div class="ram"><iframe src="index.html" title="Polerade"></iframe></div>
+    <a href="index.html" target="_blank">Öppna i egen flik →</a>
+  </div>
+</div>
+</body>
+</html>
+"""
+
+
 def main():
     php = open(PHP, encoding="utf-8").read()
     block_ab = blocket(php, [par("jobb-a", 1), par("jobb-b", 2)], "ampy-foreefter-rubrik-1")
+    block_orig = blocket(php, [par("jobb-a", 1, "img/jobb-original"), par("jobb-b", 2, "img/jobb-original")], "ampy-foreefter-rubrik-1")
     block_cd = blocket(php, [par("jobb-c", 3), par("jobb-d", 4)], "ampy-foreefter-rubrik-2")
     block_e  = blocket(php, [par("jobb-e", 5)],                    "ampy-foreefter-rubrik-3")
     sidor = [
         ("index.html", "Före/efter-blocket — Ampy", block_ab, True, False),
+        # A/B: samma block med WhatsApp-originalen för jobb A och B
+        ("original.html", "Före/efter-blocket — originalfoton", block_orig, True, False),
         ("no-js.html", "Före/efter-blocket utan JavaScript — Ampy", block_ab, False, True),
         # Alla fem jobben, som tre block efter varandra — så ägaren ser varje par
         # i verktyget och kan välja vilka som ska stå på vilken sida.
@@ -196,6 +240,9 @@ def main():
         with open(os.path.join(ROT, namn), "w", encoding="utf-8") as f:
             f.write(sida(titel, block, med_js, nojs))
         print("skrev", namn)
+    with open(os.path.join(ROT, "jamfor.html"), "w", encoding="utf-8") as f:
+        f.write(JAMFOR)
+    print("skrev jamfor.html")
 
 
 if __name__ == "__main__":
