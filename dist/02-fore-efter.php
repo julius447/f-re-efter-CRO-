@@ -56,10 +56,17 @@ if (!defined('ABSPATH')) { exit; }
  *
  * Fotoprotokollet: fota liggande, centralen mitt i bild, med luft runt om.
  */
-add_action('after_setup_theme', function () {
+$ampy_foreefter_bildstorlekar = function () {
 	add_image_size('ampy-foreefter', 1200, 900, array('center', 'center'));
 	add_image_size('ampy-foreefter-2x', 2400, 1800, array('center', 'center'));
-});
+};
+// Snippet-laddare kör vid olika tidpunkter. Har init redan passerat registrerar
+// vi direkt; annars väntar vi in det. Båda vägarna ger samma resultat.
+if (did_action('init')) {
+	$ampy_foreefter_bildstorlekar();
+} else {
+	add_action('init', $ampy_foreefter_bildstorlekar);
+}
 
 add_shortcode('ampy_fore_efter', function ($atts) {
 

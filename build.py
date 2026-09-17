@@ -74,11 +74,8 @@ YTTRE = {
                    'och märkta grupper. Samma jobb oavsett hur det såg ut innan.</p>',
 }
 
-NOTIS = """<p class="mockup-note">
-  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
-  <span><b>F&ouml;rhandsgranskning.</b> Riktiga foton fr&aring;n Ampys egna jobb, levererade av
-  &auml;garen 2026-09-17. Inte &auml;nnu signerade i bevismapp &mdash; det &auml;r grinden f&ouml;re publicering.</span>
-</p>"""
+# Ingen förhandsgranskningsremsa längre (ägarbeslut 2026-09-17). Sidan visar
+# blocket exakt som det kommer att se ut på sajten.
 
 
 def version(rel):
@@ -173,7 +170,6 @@ def sida(titel, block, med_js, nojs_klass=False):
 </head>
 <body>
 
-{NOTIS}
 
 <!-- Genererad av build.py ur dist/02-fore-efter.php. Redigera INTE här. -->
 {block}

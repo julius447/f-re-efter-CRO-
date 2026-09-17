@@ -35,6 +35,8 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 | e | lösa ledare ur väggen (rivet läge) | central med öppen lucka, längre håll | svagast |
 
 `index.html` visar a + b. `alla.html` visar alla fem som tre block efter varandra.
+Förhandsgranskningsremsan är borttagen (ägarbeslut 2026-09-17): sidan visar blocket exakt som det
+kommer att se ut på sajten.
 
 ## Vad som ligger var
 
@@ -49,8 +51,10 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 | `no-js.html` | Samma block utan skript: staplade par |
 | `build.py` | Packar förhandsgranskningen ur PHP-mallen (en sanning, ingen drift) |
 | `acf/ampy-foreefter-falt.json` | ACF-fältgruppen, importeras rakt av — inget byggs för hand |
-| `HANDOVER.md` | Vad Chris klistrar in var, ACF-fälten, bildkraven, mätningen |
+| `IMPLEMENTATION.md` | **Implementationsguiden till Chris** (engelska): steg för steg med kontroll efter varje steg, fältreferens, beteendespec, felsökning, juridisk grind |
+| `FOTOPROTOKOLL.md` | Sju punkter till montörerna, en laminerad rad i servicebilen |
 | `KODGRANSKNING.md` | Kodgranskningen: nio rättade defekter, vad som kontrollerats, vad som inte gick att verifiera |
+| `KODGRANSKNING.md` §5 + `IMPLEMENTATION.md` §8 | vad som INTE verifierats: WebKit på riktig iPhone, Firefox |
 | `wireframes/` | Fas 1, oförändrad |
 
 ## Kanon som inte får brytas
@@ -96,7 +100,9 @@ par som inte är signerat — i förhandsgranskningen är den grinden förbi­ko
 | Mörka skärmen bakom chipsen borttagen | 2026-08-17 | `__ram::before` struken |
 | EFTER-chippet: en plan färg, ingen gradient, ingen blixt | 2026-08-17 | `.ampy-foreefter__chip--efter` |
 | "Villa i [Ort]" borttagen ur bildtexten | 2026-08-17 | `__plats` struken |
-| ILLUSTRATION-taggen borttagen ur bilderna | 2026-08-17 | upplysningen bärs av remsan i förhandsgranskningen, utanför blocket |
+| ILLUSTRATION-taggen borttagen ur bilderna | 2026-08-17 | ersatt av riktiga foton 2026-09-17 |
+| Förhandsgranskningsremsan borttagen | 2026-09-17 | `build.py` |
+| Fokusringen visas bara för tangentbordsfokus | 2026-09-17 | `fokus-fran-pekare` i JS + CSS |
 | Riktiga foton från fem jobb ersätter illustrationerna | 2026-09-17 | `img/jobb/`, `build.py` |
 | Bildtexterna per par ersatta av EN semi-global tagline, unik per tjänst | 2026-08-17 | `.ampy-foreefter__tagline`, ACF-fält `tagline` |
 | EFTER-chippet klipps spegelvänt mot sömmen, så en dragning helt åt höger döljer det precis som en dragning helt åt vänster döljer FÖRE | 2026-08-17 | `.ampy-foreefter__chiplager` |
