@@ -18,26 +18,57 @@ import re
 ROT = os.path.dirname(os.path.abspath(__file__))
 PHP = os.path.join(ROT, "dist", "02-fore-efter.php")
 
-PAR = [
-    {
-        "id": "ampy-foreefter-1",
-        # Syns inte längre i blocket — bär alt-texten och reglagets namn.
-        "omfattning": "Från proppskåp till ny central med jordfelsbrytare",
-        "fore": ("img/par1-fore.svg", "Byte av elcentral — före"),
-        "efter": ("img/par1-efter.svg", "Byte av elcentral — efter, utfört av Ampy"),
+# Riktiga foton från Ampys egna jobb, levererade av ägaren 2026-09-17 (fem
+# WhatsApp-zippar, EXIF redan borttaget av WhatsApp — ingen GPS). Beskurna EXAKT
+# som WordPress kommer att göra det: centrerad hårdbeskärning till kvadrat,
+# 800 + 1600 px. Ordningen är kvalitetsordning enligt konsistensregeln (samma
+# punkt, samma ljus): a och b är starkast, e svagast (före är mitt i rivningen).
+# Alt-texterna beskriver bara vad som syns i bild — inget om jobbet hittas på.
+ALLA_PAR = {
+    "jobb-a": {
+        "omfattning": "Byte av proppskåp till ny elcentral",
+        "fore_alt":  "Gammalt proppskåp med skruvsäkringar på blå bakskiva, före byte",
+        "efter_alt": "Två nya elcentraler med automatsäkringar på samma bakskiva, utfört av Ampy",
     },
-    {
-        "id": "ampy-foreefter-2",
-        "omfattning": "Femton grupper samlade i en central med jordfelsbrytare",
-        "fore": ("img/par2-fore.svg", "Byte av elcentral — före"),
-        "efter": ("img/par2-efter.svg", "Byte av elcentral — efter, utfört av Ampy"),
+    "jobb-b": {
+        "omfattning": "Byte av proppskåp till ny elcentral",
+        "fore_alt":  "Gammalt proppskåp med skruvsäkringar på orange vägg, före byte",
+        "efter_alt": "Två nya elcentraler på samma vägg, utfört av Ampy",
     },
-]
+    "jobb-c": {
+        "omfattning": "Byte av proppskåp till ny elcentral",
+        "fore_alt":  "Gammalt proppskåp med handskrivna gruppmärkningar, före byte",
+        "efter_alt": "Nya elcentraler i samma nisch, utfört av Ampy",
+    },
+    "jobb-d": {
+        "omfattning": "Byte av proppskåp till ny elcentral",
+        "fore_alt":  "Gammalt proppskåp med kabelrör, före byte",
+        "efter_alt": "Nya elcentraler på samma vägg, utfört av Ampy",
+    },
+    "jobb-e": {
+        "omfattning": "Ny elcentral",
+        "fore_alt":  "Lösa ledare i väggen efter att det gamla skåpet tagits ner, före ny central",
+        "efter_alt": "Ny elcentral med öppen lucka, utfört av Ampy",
+    },
+}
+
+
+def par(nyckel, idnr):
+    d = ALLA_PAR[nyckel]
+    return {
+        "id": "ampy-foreefter-%d" % idnr,
+        "omfattning": d["omfattning"],
+        "fore":  ("img/jobb/%s-fore" % nyckel,  d["fore_alt"]),
+        "efter": ("img/jobb/%s-efter" % nyckel, d["efter_alt"]),
+    }
+
+
+# Standardvisningen: de två starkaste paren.
+PAR = [par("jobb-a", 1), par("jobb-b", 2)]
 
 YTTRE = {
     "{{RUBRIK}}": "Så ser det ut när vi har",
     "{{ACCENT}}": ' <span class="ampy-foreefter__accent">bytt en elcentral</span>',
-    "{{RUBRIK_ID}}": "ampy-foreefter-rubrik-2-2",
     # Semi-global tagline: samma mönster på alla tjänstesidor, egen text per tjänst.
     "{{TAGLINE}}": '\n\t\t<p class="ampy-foreefter__tagline">Ny elcentral, jordfelsbrytare '
                    'och märkta grupper. Samma jobb oavsett hur det såg ut innan.</p>',
@@ -45,8 +76,8 @@ YTTRE = {
 
 NOTIS = """<p class="mockup-note">
   <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.7 2 4 13.2h5.4L8.1 22 17 10.6h-5.6z"/></svg>
-  <span><b>F&ouml;rhandsgranskning.</b> Bilderna &auml;r illustrationer, inte foton fr&aring;n riktiga jobb.
-  De ers&auml;tts av original ur bevismappen f&ouml;re publicering.</span>
+  <span><b>F&ouml;rhandsgranskning.</b> Riktiga foton fr&aring;n Ampys egna jobb, levererade av
+  &auml;garen 2026-09-17. Inte &auml;nnu signerade i bevismapp &mdash; det &auml;r grinden f&ouml;re publicering.</span>
 </p>"""
 
 
@@ -63,11 +94,14 @@ def klipp(php, start):
     return trad.group(1)
 
 
-def bild(src, alt):
+def bild(bas, alt):
+    """Speglar exakt vad wp_get_attachment_image(id, 'ampy-foreefter') ger:
+    src = 800-kvadraten, srcset = 800w + 1600w, width/height = 800."""
     return (
-        '<img class="ampy-foreefter__bild" src="%s" width="1000" height="1000" '
-        'loading="lazy" decoding="async" draggable="false" '
-        'sizes="(max-width: 719px) 94vw, 620px" alt="%s">' % (src, alt)
+        '<img class="ampy-foreefter__bild" src="%s-800.jpg" '
+        'srcset="%s-800.jpg 800w, %s-1600.jpg 1600w" '
+        'width="800" height="800" loading="lazy" decoding="async" draggable="false" '
+        'sizes="(max-width: 719px) 94vw, 620px" alt="%s">' % (bas, bas, bas, alt)
     )
 
 
@@ -85,12 +119,12 @@ def nojs_regler(ids):
     )
 
 
-def blocket(php):
+def blocket(php, par_lista, rubrik_id):
     mall_par = klipp(php, "AMPY-MALL-PAR-START")
     mall_yttre = klipp(php, "AMPY-MALL-YTTRE-START")
 
     par_html = ""
-    for p in PAR:
+    for p in par_lista:
         bit = mall_par
         for nyckel, varde in {
             "{{ID}}": p["id"],
@@ -104,7 +138,8 @@ def blocket(php):
     ut = mall_yttre
     for nyckel, varde in YTTRE.items():
         ut = ut.replace(nyckel, varde)
-    ut = ut.replace("{{NOJS}}", nojs_regler([p["id"] for p in PAR]))
+    ut = ut.replace("{{RUBRIK_ID}}", rubrik_id)
+    ut = ut.replace("{{NOJS}}", nojs_regler([p["id"] for p in par_lista]))
     ut = ut.replace("{{PAR}}", par_html)
     return ut
 
@@ -145,11 +180,17 @@ def sida(titel, block, med_js, nojs_klass=False):
 
 def main():
     php = open(PHP, encoding="utf-8").read()
-    block = blocket(php)
-    for namn, titel, med_js, nojs in [
-        ("index.html", "Före/efter-blocket — Ampy", True, False),
-        ("no-js.html", "Före/efter-blocket utan JavaScript — Ampy", False, True),
-    ]:
+    block_ab = blocket(php, [par("jobb-a", 1), par("jobb-b", 2)], "ampy-foreefter-rubrik-1")
+    block_cd = blocket(php, [par("jobb-c", 3), par("jobb-d", 4)], "ampy-foreefter-rubrik-2")
+    block_e  = blocket(php, [par("jobb-e", 5)],                    "ampy-foreefter-rubrik-3")
+    sidor = [
+        ("index.html", "Före/efter-blocket — Ampy", block_ab, True, False),
+        ("no-js.html", "Före/efter-blocket utan JavaScript — Ampy", block_ab, False, True),
+        # Alla fem jobben, som tre block efter varandra — så ägaren ser varje par
+        # i verktyget och kan välja vilka som ska stå på vilken sida.
+        ("alla.html", "Alla fem jobben — före/efter-blocket", block_ab + "\n" + block_cd + "\n" + block_e, True, False),
+    ]
+    for namn, titel, block, med_js, nojs in sidor:
         with open(os.path.join(ROT, namn), "w", encoding="utf-8") as f:
             f.write(sida(titel, block, med_js, nojs))
         print("skrev", namn)

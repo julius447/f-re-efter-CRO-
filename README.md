@@ -15,13 +15,25 @@ kvar i `wireframes/` som historik och byggs inte vidare.
 
 ## Om bilderna — läs detta först
 
-Bilderna i repot är **illustrationer**, märkta som sådana i sitt eget hörn. Ingen är ett foto från
-ett riktigt Ampy-jobb, och ingen är AI-genererad. Fotobiblioteket finns ännu inte: live-kollen
-2026-08-16 gav noll före/efter-material på ampy.se.
+Bilderna är **riktiga foton från Ampys egna jobb**, levererade av ägaren 2026-09-17 (fem
+WhatsApp-arkiv, fem jobb). WhatsApp hade redan tagit bort EXIF — ingen GPS, ingen kamerainfo —
+så de är säkra i ett publikt repo. Bearbetade exakt som WordPress kommer att göra det: centrerad
+hårdbeskärning till kvadrat, 800 och 1600 px, JPEG kvalitet 82, ingen EXIF skriven.
 
-De finns för att visa **formen** och **konsistensregeln** (samma ram, samma ljus, bara jobbet
-skiljer). De ersätts av original ur bevismappen före publicering, och blocket vägrar rendera ett par
-som inte är signerat.
+**De är inte signerade i bevismapp ännu.** Det är grinden före publicering: originalfiler med EXIF,
+order-referens och kundmedgivande per par (MFL 10 §, omvänd bevisbörda). Blocket vägrar rendera ett
+par som inte är signerat — i förhandsgranskningen är den grinden förbi­kopplad med flit, för att
+ägaren ska kunna se hur det ser ut.
+
+| Jobb | Före | Efter | Konsistens |
+|---|---|---|---|
+| a | proppskåp på blå bakskiva | två Hager-centraler, samma skiva | starkast |
+| b | proppskåp på orange vägg | två centraler, samma vägg | starkast |
+| c | proppskåp med handskrivna lappar | centraler i samma nisch | bra |
+| d | proppskåp med kabelrör | centraler, samma vägg | bra |
+| e | lösa ledare ur väggen (rivet läge) | central med öppen lucka, längre håll | svagast |
+
+`index.html` visar a + b. `alla.html` visar alla fem som tre block efter varandra.
 
 ## Vad som ligger var
 
@@ -30,7 +42,9 @@ som inte är signerat.
 | `dist/01-fore-efter.css` | Blockets CSS → FluentSnippets, head |
 | `dist/02-fore-efter.php` | Shortcode `[ampy_fore_efter]` + markupmallen → FluentSnippets, frontend & backend |
 | `dist/03-fore-efter.js` | Reglaget → FluentSnippets, footer |
-| `index.html` | Förhandsgranskning. Genereras av `build.py` ur PHP-mallen, läser `dist/` |
+| `index.html` | Förhandsgranskning med de två starkaste paren. Genereras av `build.py` ur PHP-mallen, läser `dist/` |
+| `alla.html` | Alla fem jobben som tre block efter varandra |
+| `img/jobb/` | De riktiga fotona, kvadratiska 800 + 1600 px |
 | `no-js.html` | Samma block utan skript: staplade par |
 | `build.py` | Packar förhandsgranskningen ur PHP-mallen (en sanning, ingen drift) |
 | `acf/ampy-foreefter-falt.json` | ACF-fältgruppen, importeras rakt av — inget byggs för hand |
@@ -81,6 +95,7 @@ som inte är signerat.
 | EFTER-chippet: en plan färg, ingen gradient, ingen blixt | 2026-08-17 | `.ampy-foreefter__chip--efter` |
 | "Villa i [Ort]" borttagen ur bildtexten | 2026-08-17 | `__plats` struken |
 | ILLUSTRATION-taggen borttagen ur bilderna | 2026-08-17 | upplysningen bärs av remsan i förhandsgranskningen, utanför blocket |
+| Riktiga foton från fem jobb ersätter illustrationerna | 2026-09-17 | `img/jobb/`, `build.py` |
 | Bildtexterna per par ersatta av EN semi-global tagline, unik per tjänst | 2026-08-17 | `.ampy-foreefter__tagline`, ACF-fält `tagline` |
 | EFTER-chippet klipps spegelvänt mot sömmen, så en dragning helt åt höger döljer det precis som en dragning helt åt vänster döljer FÖRE | 2026-08-17 | `.ampy-foreefter__chiplager` |
 | Understrykningen under rubrikaccenten är svart, inte grön | 2026-08-17 | `.ampy-foreefter__accent::after` |
@@ -90,7 +105,7 @@ som inte är signerat.
 
 | Grind | Fråga | Läge |
 |---|---|---|
-| **GRIND 0** | Fotobiblioteket finns inte | **Blockerar lansering.** Fotoprotokollet måste ut till montörerna. |
+| **GRIND 0** | Fotobiblioteket | Fem par finns nu. **Signering i bevismapp saknas** (original med EXIF, order-ref, kundmedgivande) — det blockerar lansering. |
 | GAP-8.1 | Medgivanderad i arbetsordern | Blockerar lansering. |
 | GAP-11.2 | Position 4 vs 5 i sidsekvensen | Blocket är byggt fristående. |
 | ACF | Fältgruppen + repeatern finns inte i WordPress ännu | Se `HANDOVER.md` §2. |
