@@ -72,8 +72,6 @@ YTTRE = {
     # Tagline: tom — ägarbeslut 2026-09-17. Fältet finns kvar som frivilligt i
     # ACF; är det tomt renderas ingenting.
     "{{TAGLINE}}": "",
-}}": '\n\t\t<p class="ampy-foreefter__tagline">Ny elcentral, jordfelsbrytare '
-                   'och märkta grupper. Samma jobb oavsett hur det såg ut innan.</p>',
 }
 
 # Ingen förhandsgranskningsremsa längre (ägarbeslut 2026-09-17). Sidan visar
