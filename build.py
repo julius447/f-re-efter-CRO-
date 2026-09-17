@@ -4,7 +4,7 @@ Packar förhandsgranskningen ur produktionsfilerna.
 
 Poängen är EN sanning: blockets markup finns bara på ett ställe —
 `dist/02-fore-efter.php`. Det här skriptet klipper ut de två mallarna
-(yttre skalet och parmallen), fyller dem med demovärden och skriver
+(yttre skalet och parmallen), fyller dem med de två jobben och skriver
 `index.html` + `no-js.html`. CSS och JS länkas in ur `dist/`, aldrig kopieras.
 
 Alltså: det som godkänns i förhandsgranskningen är exakt de element och exakt
@@ -18,37 +18,21 @@ import re
 ROT = os.path.dirname(os.path.abspath(__file__))
 PHP = os.path.join(ROT, "dist", "02-fore-efter.php")
 
-# Riktiga foton från Ampys egna jobb, levererade av ägaren 2026-09-17 (fem
-# WhatsApp-zippar, EXIF redan borttaget av WhatsApp — ingen GPS). Bearbetade EXAKT
-# som WordPress kommer att göra det: 4:3 (telefonens format, ingen beskärning för
-# liggande foton), 1200 px + största tillgängliga upp till 2400 utan uppskalning. Ordningen är kvalitetsordning enligt konsistensregeln (samma
-# punkt, samma ljus): a och b är starkast, e svagast (före är mitt i rivningen).
+# De två jobb som ska användas — ägarbeslut 2026-09-17: bara dessa fyra bilder,
+# inga testbilder. Mästarna ligger i images/ (elcentral-byte-01/02); img/jobb/
+# är förhandsgranskningens derivat av exakt dem, byggda som WordPress bygger
+# sina: 4:3, 1200 px + källstorleken, ingen uppskalning.
 # Alt-texterna beskriver bara vad som syns i bild — inget om jobbet hittas på.
 ALLA_PAR = {
-    "jobb-a": {
+    "jobb-a": {   # = elcentral-byte-01: blå bakskiva
         "omfattning": "Byte av proppskåp till ny elcentral",
         "fore_alt":  "Gammalt proppskåp med skruvsäkringar på blå bakskiva, före byte",
         "efter_alt": "Två nya elcentraler med automatsäkringar på samma bakskiva, utfört av Ampy",
     },
-    "jobb-b": {
+    "jobb-b": {   # = elcentral-byte-02: orange vägg
         "omfattning": "Byte av proppskåp till ny elcentral",
         "fore_alt":  "Gammalt proppskåp med skruvsäkringar på orange vägg, före byte",
         "efter_alt": "Två nya elcentraler på samma vägg, utfört av Ampy",
-    },
-    "jobb-c": {
-        "omfattning": "Byte av proppskåp till ny elcentral",
-        "fore_alt":  "Gammalt proppskåp med handskrivna gruppmärkningar, före byte",
-        "efter_alt": "Nya elcentraler i samma nisch, utfört av Ampy",
-    },
-    "jobb-d": {
-        "omfattning": "Byte av proppskåp till ny elcentral",
-        "fore_alt":  "Gammalt proppskåp med kabelrör, före byte",
-        "efter_alt": "Nya elcentraler på samma vägg, utfört av Ampy",
-    },
-    "jobb-e": {
-        "omfattning": "Ny elcentral",
-        "fore_alt":  "Lösa ledare i väggen efter att det gamla skåpet tagits ner, före ny central",
-        "efter_alt": "Ny elcentral med öppen lucka, utfört av Ampy",
     },
 }
 
@@ -63,7 +47,6 @@ def par(nyckel, idnr, mapp="img/jobb"):
     }
 
 
-# Standardvisningen: de två starkaste paren.
 PAR = [par("jobb-a", 1), par("jobb-b", 2)]
 
 YTTRE = {
@@ -123,20 +106,25 @@ def schema(par_lista):
                            "name": alt, "description": p["omfattning"]})
     d = {"@context": "https://schema.org", "@type": "ImageGallery",
          "name": "Så ser det ut när vi har bytt en elcentral", "image": bilder}
-    return '\n\t<script type="application/ld+json">' + json.dumps(d, ensure_ascii=False) + "</script>"
+    return ('\n\t<script type="application/ld+json">'
+            + json.dumps(d, ensure_ascii=False).replace("</", "<\\/") + "</script>")
 
 
 def nojs_regler(ids):
-    v = ", ".join("#" + i for i in ids)
+    """Speglar PHP:ns <noscript>-regler: ett prefix PER figur ("#a .x,#b .x")."""
+    def sel(klass):
+        return ",".join("#" + i + " " + klass for i in ids)
     return (
-        v + " .ampy-foreefter__ram{position:static;aspect-ratio:auto;display:grid;gap:4px;"
+        sel(".ampy-foreefter__ram") + "{position:static;aspect-ratio:auto;display:grid;gap:4px;"
         "background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}"
-        + v + " .ampy-foreefter__ram::after{display:none}"
-        + v + " .ampy-foreefter__lager{position:relative;inset:auto}"
-        + v + " .ampy-foreefter__lager>img{height:auto;aspect-ratio:4/3}"
-        + v + " .ampy-foreefter__lager--fore{clip-path:none;order:-1}"
-        + v + " .ampy-foreefter__somlinje," + v + " .ampy-foreefter__handtag,"
-        + v + " .ampy-foreefter__ledtrad," + v + " .ampy-foreefter__reglage{display:none}"
+        + sel(".ampy-foreefter__ram::after") + "{display:none}"
+        + sel(".ampy-foreefter__lager") + "{position:relative;inset:auto}"
+        + sel(".ampy-foreefter__lager>img") + "{height:auto;aspect-ratio:4/3}"
+        + sel(".ampy-foreefter__lager--fore") + "{clip-path:none;grid-area:1/1}"
+        + sel(".ampy-foreefter__lager--efter") + "{grid-area:2/1}"
+        + sel(".ampy-foreefter__chiplager") + "{grid-area:2/1;position:relative;inset:auto;clip-path:none}"
+        + sel(".ampy-foreefter__somlinje") + "," + sel(".ampy-foreefter__handtag") + ","
+        + sel(".ampy-foreefter__ledtrad") + "," + sel(".ampy-foreefter__reglage") + "{display:none}"
     )
 
 
@@ -199,67 +187,17 @@ def sida(titel, block, med_js, nojs_klass=False):
 """
 
 
-JAMFOR = """<!doctype html>
-<html lang="sv">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A/B — original mot polerade bilder</title>
-<meta name="robots" content="noindex">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-  body { margin: 0; background: #fff; font-family: "Outfit", -apple-system, sans-serif; color: #090b32; }
-  .rad { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; }
-  .kol h2 { margin: 0 0 8px; font-size: 18px; font-weight: 500; }
-  .kol p { margin: 0 0 12px; font-size: 14px; font-weight: 300; color: rgba(9,11,50,.7); }
-  .kol a { color: #090b32; font-size: 13px; }
-  .ram { border: 1px solid rgba(9,11,50,.14); border-radius: 12px; overflow: hidden; background: #f5f9ff; }
-  .ram iframe { border: 0; display: block; width: 100%; height: 720px; }
-  @media (max-width: 900px) { .rad { grid-template-columns: 1fr; } .ram iframe { height: 1180px; } }
-</style>
-</head>
-<body>
-<div class="rad">
-  <div class="kol">
-    <h2>A — originalen</h2>
-    <p>WhatsApp-fotona som elektrikerna skickade, obearbetade.</p>
-    <div class="ram"><iframe src="original.html" title="Original"></iframe></div>
-    <a href="original.html" target="_blank">Öppna i egen flik →</a>
-  </div>
-  <div class="kol">
-    <h2>B — polerade</h2>
-    <p>Samma jobb, ägarens polerade versioner.</p>
-    <div class="ram"><iframe src="index.html" title="Polerade"></iframe></div>
-    <a href="index.html" target="_blank">Öppna i egen flik →</a>
-  </div>
-</div>
-</body>
-</html>
-"""
-
-
 def main():
     php = open(PHP, encoding="utf-8").read()
-    block_ab = blocket(php, [par("jobb-a", 1), par("jobb-b", 2)], "ampy-foreefter-rubrik-1")
-    block_orig = blocket(php, [par("jobb-a", 1, "img/jobb-original"), par("jobb-b", 2, "img/jobb-original")], "ampy-foreefter-rubrik-1")
-    block_cd = blocket(php, [par("jobb-c", 3), par("jobb-d", 4)], "ampy-foreefter-rubrik-2")
-    block_e  = blocket(php, [par("jobb-e", 5)],                    "ampy-foreefter-rubrik-3")
+    block = blocket(php, PAR, "ampy-foreefter-rubrik-1")
     sidor = [
-        ("index.html", "Före/efter-blocket — Ampy", block_ab, True, False),
-        # A/B: samma block med WhatsApp-originalen för jobb A och B
-        ("original.html", "Före/efter-blocket — originalfoton", block_orig, True, False),
-        ("no-js.html", "Före/efter-blocket utan JavaScript — Ampy", block_ab, False, True),
-        # Alla fem jobben, som tre block efter varandra — så ägaren ser varje par
-        # i verktyget och kan välja vilka som ska stå på vilken sida.
-        ("alla.html", "Alla fem jobben — före/efter-blocket", block_ab + "\n" + block_cd + "\n" + block_e, True, False),
+        ("index.html", "Före/efter-blocket — Ampy", block, True, False),
+        ("no-js.html", "Före/efter-blocket utan JavaScript — Ampy", block, False, True),
     ]
     for namn, titel, block, med_js, nojs in sidor:
         with open(os.path.join(ROT, namn), "w", encoding="utf-8") as f:
             f.write(sida(titel, block, med_js, nojs))
         print("skrev", namn)
-    with open(os.path.join(ROT, "jamfor.html"), "w", encoding="utf-8") as f:
-        f.write(JAMFOR)
-    print("skrev jamfor.html")
 
 
 if __name__ == "__main__":

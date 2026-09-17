@@ -42,13 +42,15 @@ drag on iPhone, Android and desktop, and the block looks identical to the live r
 | `dist/02-fore-efter.php` | image sizes + shortcode `[ampy_fore_efter]` + the markup template | FluentSnippets → **PHP** → **Frontend & Backend** |
 | `dist/03-fore-efter.js` | the slider | FluentSnippets → **JS** → **Footer** |
 | `acf/ampy-foreefter-falt.json` | the ACF field group | ACF → Tools → **Import** |
-| `images/elcentral-byte-NN-{fore,efter}.jpg` | the ten upload masters: five jobs, SEO filenames, highest available quality | upload to Media (§6) |
+| `images/elcentral-byte-0N-{fore,efter}.jpg` | the four upload masters: two jobs, SEO filenames, highest available quality | upload to Media (§6) |
 | `images/manifest.csv` | filename → alt text, title, caption, dimensions, source | reference for the media library fields |
-| `images/wp-media-import.sh` | one WP-CLI command per image with alt/title/caption pre-filled | run once from the WordPress root (§4 step 6) |
-| `img/`, `index.html`, `alla.html`, `original.html`, `jamfor.html` | preview only — derived from the masters | do not upload |
+| `images/wp-media-import.sh` | one WP-CLI command per image with alt/title/caption pre-filled | run once (§4 step 6) |
+| `FOTOPROTOKOLL.md` | seven rules for the electricians who shoot future pairs (Swedish) | hand to the field team |
+| `KODGRANSKNING.md` | the two code reviews and what they fixed (Swedish) | background only |
 
-`index.html`, `alla.html`, `no-js.html` are previews generated from the PHP template by `build.py`.
-They reference `dist/` by link — they contain no copy of it. What you paste is what the preview shows.
+The live reference (`index.html`, `no-js.html`) is generated from the PHP template by a build script
+in the GitHub repo (`julius447/f-re-efter-CRO-`), not shipped in this package. It links to `dist/` —
+it contains no copy of it. What you paste is what the preview shows.
 
 **Paste the files as-is.** Do not reformat, do not "clean up", do not move rules to a global
 stylesheet. The block is deliberately self-contained (§9).
@@ -60,7 +62,7 @@ stylesheet. The block is deliberately self-contained (§9).
 ### Step 1 — CSS snippet
 FluentSnippets → New → type **CSS** → paste `dist/01-fore-efter.css` → placement **Head** → activate.
 
-Verify: view-source of any page contains `.ampy-foreefter{`.
+Verify: view-source of any page contains `@property --ampyfe-pos` (the first rule in the file).
 
 ### Step 2 — PHP snippet
 FluentSnippets → New → type **PHP** → paste `dist/02-fore-efter.php` **without** the opening
@@ -96,33 +98,39 @@ Verify: pick an uploaded image → `wp_get_attachment_image_src($id, 'ampy-foree
 `…-1200x900.jpg` URL.
 
 ### Step 6 — Import the images
-From the WordPress root, with WP-CLI available:
+With WP-CLI available, run from the WordPress root (where `wp-config.php` is). The `images/` folder
+can be anywhere — pass its path:
 
 ```bash
-bash images/wp-media-import.sh images
+bash /path/to/handover/images/wp-media-import.sh /path/to/handover/images
 ```
 
-It imports the ten masters with alt text, title and caption already set (from `manifest.csv`) and
+It imports the four masters with alt text, title and caption already set (from `manifest.csv`) and
 prints one attachment ID per file. Note the IDs — they go into the repeater in step 8.
 
 No WP-CLI? Upload the files from `images/` through Media → Add New, then paste alt/title/caption
 from `manifest.csv` by hand. Run Regenerate Thumbnails afterwards if you uploaded before step 5.
 
-Verify: Media library shows ten images named `elcentral-byte-…`, each with alt text filled.
+Verify: Media library shows four images named `elcentral-byte-…`, each with alt text filled.
 
 ### Step 7 — Place the block
 In Bricks, add a **Shortcode** element (not a Code element) where the block should sit — in the
 proof zone, after the content block, before Testimonials. Content: `[ampy_fore_efter]`.
 
-Verify: nothing renders yet. That is correct — no pair is signed (§5).
+Verify: nothing renders yet. That is correct — no pair is signed yet (§5).
 
 ### Step 8 — Fill the fields
 On the page: Rubrik `Så ser det ut när vi har`, Rubrik – understruken del `bytt en elcentral`,
-leave Tagline empty, then add two rows in the repeater. For the elcentral page use jobs **01** and
-**02** (the strongest pairs): before = `elcentral-byte-01-fore`, after = `elcentral-byte-01-efter`,
-Omfattning `Byte av proppskåp till ny elcentral`, tick **Signerad**; then the same for 02.
+leave Tagline empty, then add two rows in the repeater: before = `elcentral-byte-01-fore`, after =
+`elcentral-byte-01-efter`, Omfattning `Byte av proppskåp till ny elcentral`; then the same for 02.
+Leave `fore_alt`/`efter_alt` empty — the block picks up the media-library alt text you imported.
 
-Verify: the block renders with both pairs. Drag both sliders. Compare against the live reference.
+**Signerad is Julius's box, not yours.** It is the owner's attestation that the evidence folder for
+that pair exists (§13). Until he ticks it the pair renders nothing — that is the gate working. To see
+the block on a staging page before he has, tick it there and untick before the page goes public.
+
+Verify: with both rows signed, the block renders both pairs. Drag both sliders. Compare against the
+live reference.
 
 ---
 
@@ -149,7 +157,7 @@ the pairs, never above — the H2 must stay the block's only opening.
 | `omfattning` | Text | **yes** | not displayed — it is the images' alt text and the slider's accessible name |
 | `jobbtyp` | Text | no | used in alt text, e.g. `Byte av elcentral` |
 | `fore_alt` / `efter_alt` | Text | no | leave empty and they are built from `jobbtyp`/`omfattning` |
-| `signerad` | True/False | **yes** | see the gate below |
+| `signerad` | True/False | no (defaults off) | the gate below skips the row while it is off — only the owner ticks it |
 
 ### The gate — this is intentional, do not "fix" it
 
@@ -159,7 +167,7 @@ If no row survives, the shortcode returns an empty string and **nothing renders*
 Reason: Swedish marketing law (MFL 10 §) puts the burden of proof on Ampy. A before/after pair that
 cannot be backed by original files with EXIF, an order reference and the customer's consent is not
 proof — it is a liability. `signerad` is the editorial confirmation that this evidence folder exists
-for that pair. Never tick it as a shortcut.
+for that pair. Never tick it as a shortcut; on a public page only Julius ticks it.
 
 If exactly one row survives it renders centred at up to 760 px instead of half-width and alone.
 More than two rows: only the first two render (`$MAX_PAR = 2` in the PHP — a stated limit, not a
@@ -171,17 +179,14 @@ silent truncation).
 
 ### The masters in `images/`
 
-| File | Job | Source | Pixels | Notes |
-|---|---|---|---|---|
-| `elcentral-byte-01-fore.jpg` / `-efter.jpg` | blue backing board | owner's polished version, lossless PNG → JPEG q95 4:4:4 (one encode) | 1448 × 1086 | strongest pair — use on the elcentral page |
-| `elcentral-byte-02-fore.jpg` / `-efter.jpg` | orange wall | same | 1448 × 1086 | strongest pair — use on the elcentral page |
-| `elcentral-byte-03-…` | handwritten labels | WhatsApp JPEG, copied byte-for-byte | 1600 × 1200 (efter 1600 × 1139) | good |
-| `elcentral-byte-04-…` | conduit on white wall | same | 1600 × 1200 | good |
-| `elcentral-byte-05-…` | mid-demolition | same | 2048 × 1536 | weakest — before shows bare wires, not the old panel |
+| File | Job | Source | Pixels |
+|---|---|---|---|
+| `elcentral-byte-01-fore.jpg` / `-efter.jpg` | blue backing board, wooden ceiling | the owner's photos of the job, polished (Ampy logo retouched out); encoded once from the lossless master, JPEG q95 4:4:4 | 1448 × 1086 |
+| `elcentral-byte-02-fore.jpg` / `-efter.jpg` | orange wall | same | 1448 × 1086 |
 
-"Highest possible quality" here means **the pixels were never touched more than necessary**: 01/02
-were encoded exactly once from a lossless source; 03–05 are the originals, byte for byte. No EXIF in
-any file (WhatsApp strips it; the encode writes none) — nothing to leak.
+These four are the only images the block ships with — owner decision 2026-09-17. "Highest possible
+quality" here means the pixels were touched exactly once: one encode from the lossless master, no
+resampling. No EXIF in any file — nothing to leak.
 
 Filenames are SEO-ready: lowercase, hyphenated, the service term first, pair number, side. No
 location in the name because none is verified — never add one that isn't.
@@ -202,15 +207,14 @@ The PHP registers two sizes, both centre-cropped to 4:3 for anything uploaded in
 | `ampy-foreefter` | 1200 × 900 | the `src` the block requests |
 | `ampy-foreefter-2x` | 2400 × 1800 | retina candidate in `srcset` |
 
-WordPress never upscales. Jobs 01/02 are 1448 px wide, so they get the 1200 size only — the 2x size
+WordPress never upscales. The masters are 1448 px wide, so they get the 1200 size only — the 2x size
 is not generated for them and the browser uses the 1200 file on retina. That is the source ceiling,
-not a bug. Jobs 03–05 (1600/2048 px) are the same: only 05 comes close to the 2x size and still
-doesn't reach it. Two sizes are registered anyway because future photos shot on a phone at full
-resolution (3000–4000 px) will populate both.
+not a bug. Two sizes are registered anyway because future photos shot on a phone at full resolution
+(3000–4000 px) will populate both.
 
 ### File weight
 
-Masters are 120–570 kB; the 1200 × 900 derivative WordPress serves will land at roughly 100–180 kB
+Masters are 460–570 kB; the 1200 × 900 derivative WordPress serves will land at roughly 100–180 kB
 as JPEG. The budget is 30–80 kB per image. WordPress does not produce AVIF/WebP by itself. Two ways
 to close the gap, both site-wide and therefore **your call, not part of this block**:
 
@@ -251,19 +255,19 @@ For a quick test without ACF, every field can be passed as an attribute (single 
 | Aspect | Expected |
 |---|---|
 | Rest position | seam centred at 50 %: half before, half after |
-| Drag | press anywhere in the frame → seam jumps there; drag follows the finger/pointer; continues past the frame edge |
+| Drag | mouse: press anywhere → seam jumps there, drag follows. Touch/pen: the seam waits until the finger has moved > 6 px sideways (and more sideways than up/down); then it follows. A tap without movement places the seam where the finger was. Continues past the frame edge |
 | Multi-touch | the first finger owns the drag; a resting thumb neither moves nor ends it |
-| Vertical scroll | a vertical swipe over the frame scrolls the page; pinch-zoom still works |
+| Vertical scroll | a vertical swipe **starting on the frame** scrolls the page; the seam, the hint and the interact event are untouched; pinch-zoom still works |
 | Native image drag | never starts (images are `pointer-events: none` + `draggable="false"`) |
 | Slider under the frame | native `<input type="range">`, mirrors the seam; dragging it moves the seam |
 | Keyboard (slider focused) | ← → ±5 %, PageUp/Down ±10 %, Home/End. Motion 260 ms |
-| Focus ring | shown only for keyboard focus. Pressing in the image never shows it |
+| Focus ring | shown only for keyboard focus, in midnight (≥3:1). Pressing in the image never shows it |
 | Chips | FÖRE lives left of the seam, EFTER right of it. Dragging fully left hides FÖRE; fully right hides EFTER |
 | Hint pill "Dra för att jämföra" | fades after the first interaction; never clipped at 0 % or 100 % |
-| Nudge | once, when ≥55 % of the frame is visible: seam moves 50→63→50 %. Off under `prefers-reduced-motion` |
-| Screen reader | slider announces "Efter syns till N procent"; images have alt text; hint and handle are hidden from AT |
+| Nudge | once, when ≥55 % of the frame is visible: seam moves 50→63→50 %. Off under `prefers-reduced-motion`, off if the slider already has focus, off in Safari < 16.4 (no `@property` → it cannot animate) |
+| Screen reader | reading order före → efter; slider announces "Efter syns till N procent"; images have alt text; chips, hint and handle are hidden from AT |
 | Layout | 2 columns when the block's own content box is >680 px (iPad portrait = 2 columns); 1 column below |
-| No JavaScript | `<noscript>` stacks the pair (before above after), both images whole, slider chrome hidden |
+| No JavaScript | `<noscript>` stacks the pair (before above after), both images whole with their chips, slider chrome hidden |
 | Print | pairs stacked, slider chrome hidden |
 | Forced colours | seam, handle and chips get system colours |
 | Multiple blocks per page | each pair is independent; `window.ampyForeEfter.start()` re-initialises after AJAX loads |
@@ -273,11 +277,11 @@ For a quick test without ACF, every field can be passed as an attribute (single 
 
 Run on a real iPhone (Safari), a real Android (Chrome), an iPad (both orientations) and desktop
 Chrome + Firefox + Safari. On each: drag both sliders; drag with a thumb resting on the screen;
-drag past the frame edge; swipe vertically over a frame; Tab to a slider and use arrows.
+drag past the frame edge; **swipe vertically starting on a frame** (the page must scroll and the seam must not move); tap once in a frame; Tab to a slider and use arrows.
 
 Everything above was verified in Blink (Chrome/Android engine) with touch emulation and synthetic
-pointer events. **WebKit on a real iPhone and Gecko were not available in the build environment** —
-those two are on you.
+pointer events, including the vertical-scroll case. **WebKit on a real iPhone and Gecko were not
+available in the build environment** — those two are on you.
 
 ---
 
@@ -287,7 +291,7 @@ Two `dataLayer` events, only pushed if `window.dataLayer` exists:
 
 | Event | When |
 |---|---|
-| `fore_efter_view` | the block has been ≥55 % visible once |
+| `fore_efter_view` | a pair has been ≥55 % visible once — one per pair, so up to two per block; `block_id` tells them apart |
 | `fore_efter_interact` | the visitor moved a slider for the first time |
 
 Payload: `{event, block: "fore_efter", riktning: "reglaget", block_id}`.
@@ -320,8 +324,8 @@ The block is built to a contract. Breaking any of these will be caught in review
 
 ### If the markup must change
 The markup lives in one place: the two heredoc templates in `dist/02-fore-efter.php` between the
-`AMPY-MALL-*-START/SLUT` markers. Edit there, then run `python3 build.py` to regenerate the previews.
-Never edit `index.html` by hand.
+`AMPY-MALL-*-START/SLUT` markers. Edit there. The live reference is regenerated from the same
+template in the GitHub repo — never hand-edit a preview.
 
 ---
 
@@ -336,7 +340,7 @@ Never edit `index.html` by hand.
 | Dragging starts a browser image drag | old CSS cached — images must be `pointer-events: none` |
 | Two tiny frames side by side on an old iPhone | expected on iOS ≤15 only if the `@supports` fallback is missing — it is in the shipped CSS |
 | Wrong font | Outfit is not loaded by the theme on that page |
-| No `-2x` file in srcset | the source is narrower than 2400 px; WordPress never upscales. Expected for jobs 01–05 |
+| No `-2x` file in srcset | the source is narrower than 2400 px; WordPress never upscales. Expected for jobs 01–02 |
 | Import script prints an error about `wp` | WP-CLI missing from PATH; upload manually and copy fields from `manifest.csv` |
 | Block appears twice / IDs collide | each block instance increments a counter; if you render the shortcode inside a loop, IDs stay unique |
 | Loaded via AJAX and dead | call `window.ampyForeEfter.start()` after injecting |
@@ -360,5 +364,6 @@ Before ticking `signerad` on any pair, the evidence folder for that pair must co
 
 Swedish law (MFL 10 §) places the burden of proof on the advertiser. A pair without this folder is
 not published — the gate in the PHP enforces it, and the person ticking the box is the one attesting.
-The five jobs in `images/` were supplied by the owner on 2026-09-17. Ticking `signerad` on a row is
-the owner's attestation that the folder above exists for that pair.
+The two jobs in `images/` are the owner's own photos, supplied 2026-09-17. Ticking `signerad` on a
+row is the owner's attestation that the folder above exists for that pair — which is why it is his
+box to tick, not the developer's.

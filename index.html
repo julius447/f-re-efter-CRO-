@@ -9,14 +9,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/preview.css?v=1789638488">
-<link rel="stylesheet" href="dist/01-fore-efter.css?v=1789653298">
+<link rel="stylesheet" href="dist/01-fore-efter.css?v=1789659805">
 </head>
 <body>
 
 
 <!-- Genererad av build.py ur dist/02-fore-efter.php. Redigera INTE här. -->
 <section class="ampy-foreefter" aria-labelledby="ampy-foreefter-rubrik-1">
-	<noscript><style>#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__ram{position:static;aspect-ratio:auto;display:grid;gap:4px;background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__ram::after{display:none}#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__lager{position:relative;inset:auto}#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__lager>img{height:auto;aspect-ratio:4/3}#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__lager--fore{clip-path:none;order:-1}#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__somlinje,#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__handtag,#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__ledtrad,#ampy-foreefter-1, #ampy-foreefter-2 .ampy-foreefter__reglage{display:none}</style></noscript>
+	<noscript><style>#ampy-foreefter-1 .ampy-foreefter__ram,#ampy-foreefter-2 .ampy-foreefter__ram{position:static;aspect-ratio:auto;display:grid;gap:4px;background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}#ampy-foreefter-1 .ampy-foreefter__ram::after,#ampy-foreefter-2 .ampy-foreefter__ram::after{display:none}#ampy-foreefter-1 .ampy-foreefter__lager,#ampy-foreefter-2 .ampy-foreefter__lager{position:relative;inset:auto}#ampy-foreefter-1 .ampy-foreefter__lager>img,#ampy-foreefter-2 .ampy-foreefter__lager>img{height:auto;aspect-ratio:4/3}#ampy-foreefter-1 .ampy-foreefter__lager--fore,#ampy-foreefter-2 .ampy-foreefter__lager--fore{clip-path:none;grid-area:1/1}#ampy-foreefter-1 .ampy-foreefter__lager--efter,#ampy-foreefter-2 .ampy-foreefter__lager--efter{grid-area:2/1}#ampy-foreefter-1 .ampy-foreefter__chiplager,#ampy-foreefter-2 .ampy-foreefter__chiplager{grid-area:2/1;position:relative;inset:auto;clip-path:none}#ampy-foreefter-1 .ampy-foreefter__somlinje,#ampy-foreefter-2 .ampy-foreefter__somlinje,#ampy-foreefter-1 .ampy-foreefter__handtag,#ampy-foreefter-2 .ampy-foreefter__handtag,#ampy-foreefter-1 .ampy-foreefter__ledtrad,#ampy-foreefter-2 .ampy-foreefter__ledtrad,#ampy-foreefter-1 .ampy-foreefter__reglage,#ampy-foreefter-2 .ampy-foreefter__reglage{display:none}</style></noscript>
 
 	<div class="ampy-foreefter__inner">
 
@@ -26,22 +26,25 @@
 			<figure class="ampy-foreefter__figur" id="ampy-foreefter-1" data-ampy-foreefter>
 				<div class="ampy-foreefter__ram">
 
+					<!-- FÖRE står först i DOM så skärmläsaren hör före → efter. Den
+					     ritas ändå överst (z-index i CSS) och klipps vid sömmen; chippet
+					     klipps med. Chipsen är aria-hidden: reglaget bär redan namnet,
+					     annars läses "Före" och "Efter" upp som två lösa ord. -->
+					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
+						<img class="ampy-foreefter__bild" src="img/jobb/jobb-a-fore-1200.jpg" srcset="img/jobb/jobb-a-fore-1200.jpg 1200w, img/jobb/jobb-a-fore-1448.jpg 1448w" width="1200" height="900" loading="lazy" decoding="async" draggable="false" sizes="(max-width: 719px) 94vw, 620px" alt="Gammalt proppskåp med skruvsäkringar på blå bakskiva, före byte">
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore" aria-hidden="true">Före</span>
+					</div>
+
 					<!-- EFTER är basskiktet och ligger alltid helt i DOM -->
 					<div class="ampy-foreefter__lager ampy-foreefter__lager--efter">
 						<img class="ampy-foreefter__bild" src="img/jobb/jobb-a-efter-1200.jpg" srcset="img/jobb/jobb-a-efter-1200.jpg 1200w, img/jobb/jobb-a-efter-1448.jpg 1448w" width="1200" height="900" loading="lazy" decoding="async" draggable="false" sizes="(max-width: 719px) 94vw, 620px" alt="Två nya elcentraler med automatsäkringar på samma bakskiva, utfört av Ampy">
-					</div>
-
-					<!-- FÖRE ligger ovanpå och klipps vid sömmen. Chippet klipps med. -->
-					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
-						<img class="ampy-foreefter__bild" src="img/jobb/jobb-a-fore-1200.jpg" srcset="img/jobb/jobb-a-fore-1200.jpg 1200w, img/jobb/jobb-a-fore-1448.jpg 1448w" width="1200" height="900" loading="lazy" decoding="async" draggable="false" sizes="(max-width: 719px) 94vw, 620px" alt="Gammalt proppskåp med skruvsäkringar på blå bakskiva, före byte">
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore">Före</span>
 					</div>
 
 					<!-- EFTER-chippet klipps spegelvänt: det finns bara till höger om
 					     sömmen, precis som FÖRE-chippet bara finns till vänster. Drar
 					     man hela vägen åt ena hållet försvinner motsvarande sida helt. -->
 					<div class="ampy-foreefter__chiplager">
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter">Efter</span>
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter" aria-hidden="true">Efter</span>
 					</div>
 
 					<div class="ampy-foreefter__somlinje" aria-hidden="true"></div>
@@ -59,22 +62,25 @@
 			<figure class="ampy-foreefter__figur" id="ampy-foreefter-2" data-ampy-foreefter>
 				<div class="ampy-foreefter__ram">
 
+					<!-- FÖRE står först i DOM så skärmläsaren hör före → efter. Den
+					     ritas ändå överst (z-index i CSS) och klipps vid sömmen; chippet
+					     klipps med. Chipsen är aria-hidden: reglaget bär redan namnet,
+					     annars läses "Före" och "Efter" upp som två lösa ord. -->
+					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
+						<img class="ampy-foreefter__bild" src="img/jobb/jobb-b-fore-1200.jpg" srcset="img/jobb/jobb-b-fore-1200.jpg 1200w, img/jobb/jobb-b-fore-1448.jpg 1448w" width="1200" height="900" loading="lazy" decoding="async" draggable="false" sizes="(max-width: 719px) 94vw, 620px" alt="Gammalt proppskåp med skruvsäkringar på orange vägg, före byte">
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore" aria-hidden="true">Före</span>
+					</div>
+
 					<!-- EFTER är basskiktet och ligger alltid helt i DOM -->
 					<div class="ampy-foreefter__lager ampy-foreefter__lager--efter">
 						<img class="ampy-foreefter__bild" src="img/jobb/jobb-b-efter-1200.jpg" srcset="img/jobb/jobb-b-efter-1200.jpg 1200w, img/jobb/jobb-b-efter-1448.jpg 1448w" width="1200" height="900" loading="lazy" decoding="async" draggable="false" sizes="(max-width: 719px) 94vw, 620px" alt="Två nya elcentraler på samma vägg, utfört av Ampy">
-					</div>
-
-					<!-- FÖRE ligger ovanpå och klipps vid sömmen. Chippet klipps med. -->
-					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
-						<img class="ampy-foreefter__bild" src="img/jobb/jobb-b-fore-1200.jpg" srcset="img/jobb/jobb-b-fore-1200.jpg 1200w, img/jobb/jobb-b-fore-1448.jpg 1448w" width="1200" height="900" loading="lazy" decoding="async" draggable="false" sizes="(max-width: 719px) 94vw, 620px" alt="Gammalt proppskåp med skruvsäkringar på orange vägg, före byte">
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore">Före</span>
 					</div>
 
 					<!-- EFTER-chippet klipps spegelvänt: det finns bara till höger om
 					     sömmen, precis som FÖRE-chippet bara finns till vänster. Drar
 					     man hela vägen åt ena hållet försvinner motsvarande sida helt. -->
 					<div class="ampy-foreefter__chiplager">
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter">Efter</span>
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter" aria-hidden="true">Efter</span>
 					</div>
 
 					<div class="ampy-foreefter__somlinje" aria-hidden="true"></div>
@@ -95,6 +101,6 @@
 	<script type="application/ld+json">{"@context": "https://schema.org", "@type": "ImageGallery", "name": "Så ser det ut när vi har bytt en elcentral", "image": [{"@type": "ImageObject", "contentUrl": "img/jobb/jobb-a-fore-1448.jpg", "width": 1448, "height": 1086, "name": "Gammalt proppskåp med skruvsäkringar på blå bakskiva, före byte", "description": "Byte av proppskåp till ny elcentral"}, {"@type": "ImageObject", "contentUrl": "img/jobb/jobb-a-efter-1448.jpg", "width": 1448, "height": 1086, "name": "Två nya elcentraler med automatsäkringar på samma bakskiva, utfört av Ampy", "description": "Byte av proppskåp till ny elcentral"}, {"@type": "ImageObject", "contentUrl": "img/jobb/jobb-b-fore-1448.jpg", "width": 1448, "height": 1086, "name": "Gammalt proppskåp med skruvsäkringar på orange vägg, före byte", "description": "Byte av proppskåp till ny elcentral"}, {"@type": "ImageObject", "contentUrl": "img/jobb/jobb-b-efter-1448.jpg", "width": 1448, "height": 1086, "name": "Två nya elcentraler på samma vägg, utfört av Ampy", "description": "Byte av proppskåp till ny elcentral"}]}</script>
 </section>
 
-<script src="dist/03-fore-efter.js?v=1789653320" defer></script>
+<script src="dist/03-fore-efter.js?v=1789659466" defer></script>
 </body>
 </html>

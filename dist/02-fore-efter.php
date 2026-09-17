@@ -143,22 +143,25 @@ add_shortcode('ampy_fore_efter', function ($atts) {
 			<figure class="ampy-foreefter__figur" id="{{ID}}" data-ampy-foreefter>
 				<div class="ampy-foreefter__ram">
 
+					<!-- FÖRE står först i DOM så skärmläsaren hör före → efter. Den
+					     ritas ändå överst (z-index i CSS) och klipps vid sömmen; chippet
+					     klipps med. Chipsen är aria-hidden: reglaget bär redan namnet,
+					     annars läses "Före" och "Efter" upp som två lösa ord. -->
+					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
+						{{FORE_IMG}}
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore" aria-hidden="true">Före</span>
+					</div>
+
 					<!-- EFTER är basskiktet och ligger alltid helt i DOM -->
 					<div class="ampy-foreefter__lager ampy-foreefter__lager--efter">
 						{{EFTER_IMG}}
-					</div>
-
-					<!-- FÖRE ligger ovanpå och klipps vid sömmen. Chippet klipps med. -->
-					<div class="ampy-foreefter__lager ampy-foreefter__lager--fore">
-						{{FORE_IMG}}
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--fore">Före</span>
 					</div>
 
 					<!-- EFTER-chippet klipps spegelvänt: det finns bara till höger om
 					     sömmen, precis som FÖRE-chippet bara finns till vänster. Drar
 					     man hela vägen åt ena hållet försvinner motsvarande sida helt. -->
 					<div class="ampy-foreefter__chiplager">
-						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter">Efter</span>
+						<span class="ampy-foreefter__chip ampy-foreefter__chip--efter" aria-hidden="true">Efter</span>
 					</div>
 
 					<div class="ampy-foreefter__somlinje" aria-hidden="true"></div>
@@ -196,9 +199,12 @@ HTML;
 		$fore_alt  = trim((string) (isset($rad['fore_alt']) ? $rad['fore_alt'] : ''));
 		$efter_alt = trim((string) (isset($rad['efter_alt']) ? $rad['efter_alt'] : ''));
 
-		// Bilderna BÄR hela budskapet. En skärmläsaranvändare som får "före" och
-		// inget mer får ingenting alls, så fallbacken lutar sig mot omfattning —
-		// det enda textfältet som är obligatoriskt.
+		// Bilderna BÄR hela budskapet. Alt-texten hämtas i tre steg: ACF-fältet
+		// på raden, annars den alt-text bilden redan har i mediabiblioteket
+		// (importskriptet sätter den från manifest.csv), och först i sista hand
+		// en generisk rad byggd på omfattning — det enda obligatoriska textfältet.
+		if ($fore_alt === '')  { $fore_alt  = trim((string) get_post_meta($fore_id,  '_wp_attachment_image_alt', true)); }
+		if ($efter_alt === '') { $efter_alt = trim((string) get_post_meta($efter_id, '_wp_attachment_image_alt', true)); }
 		$sak = $jobbtyp !== '' ? $jobbtyp : $omfattning;
 		if ($fore_alt === '')  { $fore_alt  = $sak . ' — före'; }
 		if ($efter_alt === '') { $efter_alt = $sak . ' — efter, utfört av Ampy'; }
@@ -242,17 +248,23 @@ HTML;
 
 	if ($par_html === '') { return ''; }
 
-	// <noscript> måste peka på varje figur som faktiskt renderades.
-	$nojs_val = array();
-	foreach ($par_ids as $pid) { $nojs_val[] = '#' . $pid; }
-	$v = implode(', ', $nojs_val);
-	$nojs = $v . ' .ampy-foreefter__ram{position:static;aspect-ratio:auto;display:grid;gap:4px;background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}'
-		. $v . ' .ampy-foreefter__ram::after{display:none}'
-		. $v . ' .ampy-foreefter__lager{position:relative;inset:auto}'
-		. $v . ' .ampy-foreefter__lager>img{height:auto;aspect-ratio:4/3}'
-		. $v . ' .ampy-foreefter__lager--fore{clip-path:none;order:-1}'
-		. $v . ' .ampy-foreefter__somlinje,' . $v . ' .ampy-foreefter__handtag,'
-		. $v . ' .ampy-foreefter__ledtrad,' . $v . ' .ampy-foreefter__reglage{display:none}';
+	// <noscript> måste peka på varje figur som faktiskt renderades. Varje
+	// selektor byggs PER figur: "#a .x, #b .x" — inte "#a, #b .x", som betyder
+	// "hela #a" och gömde första paret helt (granskning 2026-09-17).
+	$sel = function ($klass) use ($par_ids) {
+		$ut = array();
+		foreach ($par_ids as $pid) { $ut[] = '#' . $pid . ' ' . $klass; }
+		return implode(',', $ut);
+	};
+	$nojs = $sel('.ampy-foreefter__ram') . '{position:static;aspect-ratio:auto;display:grid;gap:4px;background:rgba(9,11,50,.09);cursor:auto;touch-action:auto}'
+		. $sel('.ampy-foreefter__ram::after') . '{display:none}'
+		. $sel('.ampy-foreefter__lager') . '{position:relative;inset:auto}'
+		. $sel('.ampy-foreefter__lager>img') . '{height:auto;aspect-ratio:4/3}'
+		. $sel('.ampy-foreefter__lager--fore') . '{clip-path:none;grid-area:1/1}'
+		. $sel('.ampy-foreefter__lager--efter') . '{grid-area:2/1}'
+		. $sel('.ampy-foreefter__chiplager') . '{grid-area:2/1;position:relative;inset:auto;clip-path:none}'
+		. $sel('.ampy-foreefter__somlinje') . ',' . $sel('.ampy-foreefter__handtag') . ','
+		. $sel('.ampy-foreefter__ledtrad') . ',' . $sel('.ampy-foreefter__reglage') . '{display:none}';
 
 	$accent_del = $accent !== ''
 		? ' <span class="ampy-foreefter__accent">' . esc_html($accent) . '</span>'
@@ -275,7 +287,7 @@ HTML;
 			'image'    => $schema_bilder,
 		);
 		$schema_html = "\n\t<script type=\"application/ld+json\">"
-			. wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+			. wp_json_encode($schema, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP)
 			. '</script>';
 	}
 

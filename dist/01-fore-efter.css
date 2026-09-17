@@ -124,12 +124,19 @@
   container-type: inline-size;
   container-name: ampyfefig;
   margin: 0;
+  /* Startvärdet står här också, inte bara i @property: Safari före 16.4 kan
+     inte @property och skulle annars sakna värde tills JS kört — FÖRE över hela
+     ramen, sömmen i vänsterkanten. JS skriver över det inline. */
+  --ampyfe-pos: 50%;
 }
 /* Finns bara ett signerat par blir det inte halvbrett och ensamt — det
-   centreras i stället. */
+   spänner över båda kolumnerna och centreras. Explicit bredd, inte max-width
+   + auto-marginaler: figuren är en storlekscontainer (container-type) och får
+   inte mäta sitt innehåll, så shrink-to-fit ger den bredden 0. */
 .ampy-foreefter__figur:only-child {
-  max-width: 760px;
-  margin-inline: auto;
+  grid-column: 1 / -1;
+  width: min(100%, 760px);
+  justify-self: center;
 }
 
 /* --- Ramen --------------------------------------------------------------- */
@@ -182,6 +189,9 @@
   user-select: none;
   -webkit-user-select: none;
 }
+/* FÖRE står FÖRST i DOM (skärmläsaren ska höra före → efter) men ritas överst
+   och klipps vid sömmen. z-index, inte DOM-ordning, styr lagren. */
+.ampy-foreefter__lager--efter { z-index: 1; }
 .ampy-foreefter__lager--fore {
   clip-path: inset(0 calc(100% - var(--ampyfe-pos)) 0 0);
   z-index: 2;
@@ -243,7 +253,9 @@
    tryck i bilden; då ska ingen ring visas — det är inte en tangentbords-
    användare, och webbläsaren kan inte se skillnaden själv. */
 .ampy-foreefter__figur:not(.fokus-fran-pekare):has(.ampy-foreefter__reglage:focus-visible) .ampy-foreefter__handtag {
-  box-shadow: 0 3px 16px rgba(9, 11, 50, 0.32), 0 0 0 4px var(--ampyfe-teal);
+  /* Midnatt, inte teal: teal ger 2,8:1 mot ljus bakgrund, under WCAG 1.4.11:s 3:1.
+     Den vita mellanringen håller isär ringen från fotot bakom. */
+  box-shadow: 0 3px 16px rgba(9, 11, 50, 0.32), 0 0 0 3px #fff, 0 0 0 6px var(--ampyfe-midnatt);
 }
 
 .ampy-foreefter__ledtrad {
@@ -353,14 +365,20 @@
   box-shadow: 0 2px 6px rgba(9, 11, 50, 0.3);
   cursor: ew-resize;
 }
-.ampy-foreefter__reglage:focus { outline: none; }
+/* Ingen ring när fokus kom från ett tryck (fokus-fran-pekare) eller från en
+   mus. Skrivet som två regler i stället för ett rakt :focus{outline:none}:
+   en webbläsare som inte kan :focus-visible (iOS 15.0–15.3) kastar bara den
+   andra regeln och behåller sin egen ring — i stället för ingen ring alls. */
+.ampy-foreefter__figur.fokus-fran-pekare .ampy-foreefter__reglage:focus { outline: none; }
+.ampy-foreefter__reglage:focus:not(:focus-visible) { outline: none; }
 /* Äldre Firefox ritar en egen prickad inre ring på range-element. */
 .ampy-foreefter__reglage::-moz-focus-outer { border: 0; }
 /* Ringen runt spåret finns för tangentbordsanvändare. Kom fokus från ett tryck
    i bilden (fokus-fran-pekare) visas den inte: annars ritas en stor ring runt
-   hela reglaget så fort man rör handtaget. Ägarrapport 2026-09-17. */
+   hela reglaget så fort man rör handtaget. Ägarrapport 2026-09-17.
+   Midnatt, inte teal — teal når inte 3:1 mot bakgrunden (WCAG 1.4.11). */
 .ampy-foreefter__figur:not(.fokus-fran-pekare) .ampy-foreefter__reglage:focus-visible {
-  outline: 3px solid var(--ampyfe-teal);
+  outline: 3px solid var(--ampyfe-midnatt);
   outline-offset: 4px;
   border-radius: var(--ampyfe-radie-full);
 }
@@ -421,7 +439,12 @@
 .ampy-foreefter--nojs .ampy-foreefter__ram::after { display: none; }
 .ampy-foreefter--nojs .ampy-foreefter__lager { position: relative; inset: auto; }
 .ampy-foreefter--nojs .ampy-foreefter__lager > img { height: auto; aspect-ratio: 4 / 3; }
-.ampy-foreefter--nojs .ampy-foreefter__lager--fore { clip-path: none; order: -1; }
+/* Före överst, efter under. Chiplagret läggs i SAMMA rutnätscell som
+   efter-bilden, annars följer EFTER-chippet med sin absoluta position upp till
+   sektionens hörn när ramen slutar vara positionerad. */
+.ampy-foreefter--nojs .ampy-foreefter__lager--fore { clip-path: none; grid-area: 1 / 1; }
+.ampy-foreefter--nojs .ampy-foreefter__lager--efter { grid-area: 2 / 1; }
+.ampy-foreefter--nojs .ampy-foreefter__chiplager { grid-area: 2 / 1; position: relative; inset: auto; clip-path: none; }
 .ampy-foreefter--nojs .ampy-foreefter__somlinje,
 .ampy-foreefter--nojs .ampy-foreefter__handtag,
 .ampy-foreefter--nojs .ampy-foreefter__ledtrad,
@@ -435,7 +458,7 @@
    den verkliga innehållsrutan, inte på fönstret. */
 @container ampyfe (max-width: 680px) {
   .ampy-foreefter__par { grid-template-columns: 1fr; gap: var(--ampyfe-space-l); }
-  .ampy-foreefter__figur:only-child { max-width: none; }
+  .ampy-foreefter__figur:only-child { width: 100%; }
 }
 
 @container ampyfefig (max-width: 420px) {
@@ -455,7 +478,7 @@
 @supports not (container-type: inline-size) {
   @media (max-width: 720px) {
     .ampy-foreefter__par { grid-template-columns: 1fr; gap: var(--ampyfe-space-l); }
-    .ampy-foreefter__figur:only-child { max-width: none; }
+    .ampy-foreefter__figur:only-child { width: 100%; }
   }
   @media (max-width: 520px) {
     .ampy-foreefter__handtag { width: 46px; height: 46px; }
@@ -478,6 +501,9 @@
   .ampy-foreefter__somlinje { background: CanvasText; box-shadow: none; }
   .ampy-foreefter__handtag { border: 2px solid CanvasText; }
   .ampy-foreefter__chip { border: 1px solid CanvasText; }
+  /* Gradienten på spåret tas bort i högkontrastläge — utan kant syns bara tummen. */
+  .ampy-foreefter__reglage::-webkit-slider-runnable-track { border: 1px solid CanvasText; }
+  .ampy-foreefter__reglage::-moz-range-track { border: 1px solid CanvasText; }
 }
 
 /* På papper finns inget reglage. Skriv ut paren staplade i stället för
@@ -495,7 +521,9 @@
   .ampy-foreefter__ram::after { display: none; }
   .ampy-foreefter__lager { position: relative; inset: auto; }
   .ampy-foreefter__lager > img { height: auto; aspect-ratio: 4 / 3; }
-  .ampy-foreefter__lager--fore { clip-path: none; order: -1; }
+  .ampy-foreefter__lager--fore { clip-path: none; grid-area: 1 / 1; }
+  .ampy-foreefter__lager--efter { grid-area: 2 / 1; }
+  .ampy-foreefter__chiplager { grid-area: 2 / 1; position: relative; inset: auto; clip-path: none; }
   .ampy-foreefter__somlinje,
   .ampy-foreefter__handtag,
   .ampy-foreefter__ledtrad,

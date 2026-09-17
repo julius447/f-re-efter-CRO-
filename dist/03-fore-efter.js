@@ -25,6 +25,15 @@
         på window sköter frisläppningen.
    Dessutom rAF-koalescering: sömmen skrivs högst en gång per bildruta, så en
    120 Hz-skärm inte får fler layoutberäkningar än den hinner rita.
+
+   SCROLLKONTRAKTET (granskning 2026-09-17 — bevisat på iOS och Android):
+   Ett finger som landar på fotot är INTE en interaktion förrän det rört sig i
+   sidled. Tidigare flyttades sömmen redan vid pointerdown, så en vanlig
+   vertikal scroll som råkade börja på bilden ryckte sömmen, släckte ledtråden
+   för gott och skickade fore_efter_interact — innan webbläsaren hann ta över
+   scrollen. Nu: touch/penna bekräftas först efter > 6 px i sidled och mer
+   sidled än höjdled; lyfts fingret utan rörelse var det ett tryck och sömmen
+   placeras där. Musen har inget scrollproblem och hoppar direkt som förut.
    ========================================================================== */
 (function () {
   "use strict";
@@ -112,6 +121,7 @@
     function slappDraget() {
       if (aktivPekare === null) return;
       aktivPekare = null;
+      bekraftat = false;
       vantandeX = null;
     }
 
@@ -120,33 +130,71 @@
     ram.addEventListener("dragstart", function (e) { e.preventDefault(); });
 
     /* --- Pekare: tryck-för-att-placera + drag ---------------------------- */
-    ram.addEventListener("pointerdown", function (e) {
-      if (aktivPekare !== null) return;                       // ett drag åt gången
-      if (e.button !== undefined && e.button !== 0) return;    // bara vänster/primär
-      e.preventDefault();                                     // ingen textmarkering, ingen bilddragning
-      aktivPekare = e.pointerId;
-      if (ram.setPointerCapture) {
-        try { ram.setPointerCapture(e.pointerId); } catch (fel) { /* strunt samma */ }
-      }
-      /* Tangentbordet ska kunna ta vid där fingret slutade. preventScroll så
-         att sidan inte hoppar när fokus flyttas. Klassen talar om för CSS:en
-         att fokus kom från en pekare — ingen tangentbordsring ska visas. */
+    var startX = 0;
+    var startY = 0;
+    var bekraftat = false;       // har pekaren bevisat att den vill dra i sidled?
+    var TROSKEL_PX = 6;
+    var sistScrollad = 0;        // iOS: ett tryck som stoppar rullningen är inget tryck
+
+    window.addEventListener("scroll", function () { sistScrollad = Date.now(); }, { passive: true });
+
+    /* Draget är bekräftat: NU tar reglaget fokus och sömmen får följa fingret.
+       preventScroll så att sidan inte hoppar när fokus flyttas. Klassen talar
+       om för CSS:en att fokus kom från en pekare — ingen tangentbordsring. */
+    function bekrafta() {
+      if (bekraftat) return;
+      bekraftat = true;
       figur.classList.add("fokus-fran-pekare");
       try { reglage.focus({ preventScroll: true }); } catch (fel) { /* äldre motorer */ }
       mjukt(false);                       // under drag ska sömmen sitta i fingret
-      satt(procentAv(e.clientX), true);
+    }
+
+    ram.addEventListener("pointerdown", function (e) {
+      if (aktivPekare !== null) return;                       // ett drag åt gången
+      if (e.button !== undefined && e.button !== 0) return;    // bara vänster/primär
+      aktivPekare = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      bekraftat = false;
+      if (ram.setPointerCapture) {
+        try { ram.setPointerCapture(e.pointerId); } catch (fel) { /* strunt samma */ }
+      }
+      if (e.pointerType === "mouse") {
+        e.preventDefault();               // ingen textmarkering, ingen bilddragning
+        bekrafta();                       // musen kan inte scrolla med knappen nere
+        satt(procentAv(e.clientX), true);
+      }
+      /* Touch/penna: vi rör INGENTING ännu. Går fingret uppåt eller nedåt tar
+         webbläsaren över (touch-action: pan-y) och skickar pointercancel —
+         sömmen, ledtråden och mätningen förblir orörda. */
     });
 
     ram.addEventListener("pointermove", function (e) {
       if (e.pointerId !== aktivPekare) return;                // fel finger, ignorera
       // Har musknappen släppts utanför ramen är draget över, oavsett vad vi tror.
       if (e.pointerType === "mouse" && e.buttons === 0) { slappDraget(); return; }
+      if (!bekraftat) {
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        if (Math.abs(dx) <= TROSKEL_PX) return;                  // för lite för att veta
+        if (Math.abs(dx) <= Math.abs(dy) * 1.5) return;          // mer höjdled än sidled
+        bekrafta();
+      }
       schemalagg(e.clientX);
     });
 
-    ["pointerup", "pointercancel", "lostpointercapture"].forEach(function (typ) {
+    ram.addEventListener("pointerup", function (e) {
+      if (e.pointerId !== aktivPekare) return;
+      if (!bekraftat && Date.now() - sistScrollad > 120) {
+        bekrafta();                       // ett rent tryck: placera sömmen där fingret var
+        satt(procentAv(e.clientX), true);
+      }
+      slappDraget();
+    });
+
+    ["pointercancel", "lostpointercapture"].forEach(function (typ) {
       ram.addEventListener(typ, function (e) {
-        if (e.pointerId === aktivPekare) slappDraget();
+        if (e.pointerId === aktivPekare) slappDraget();       // bara släpp — aldrig flytta
       });
     });
 
@@ -212,8 +260,12 @@
 
     function vinka() {
       if (vidrord || vinkningPagar) return;
+      if (document.activeElement === reglage) return;         // rör aldrig ett reglage någon redan står på
       var stillsam = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       if (stillsam) return;
+      /* Utan @property (Safari före 16.4) går --ampyfe-pos inte att animera:
+         vinkningen blir två hopp i stället för en glidning. Då hoppar vi över den. */
+      if (!(window.CSS && typeof CSS.registerProperty === "function")) return;
       vinkningPagar = true;
       mjukt(true);
       satt(VILOLAGE + 13, false);

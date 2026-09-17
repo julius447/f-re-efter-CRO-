@@ -142,7 +142,67 @@ Sägs rakt ut i stället för att antas.
   Blink med touch-emulering och syntetiska pekarhändelser av typen `touch`. Blink är samma motor
   som Android och Chrome kör, så Android är täckt — WebKit är det inte.
 - **Firefox/Gecko.** Ingen Firefox tillgänglig i den här miljön.
-- **Riktiga foton.** Blocket är förberett för dem (se HANDOVER §2–3), men inga har körts igenom.
+- **Riktiga foton.** Stängd 2026-09-17 — ägarens fyra bilder ligger i `images/` och renderas i live-länken.
 
 Det som stänger de tre: öppna live-länken på en iPhone, en Android och i Firefox och dra i båda
 reglagen — inklusive med en vilande tumme, och hela vägen ut över kanten.
+
+
+---
+
+# Granskning 2 — 2026-09-17, inför överlämning
+
+Sex granskningslinser (iOS, Android, desktop, tillgänglighet, WordPress, dokumentation) körda parallellt
+på hela blocket; varje fynd prövat av tre oberoende skeptiker som fick i uppdrag att vederlägga det.
+30 fynd, 0 vederlagda — sex av dem var samma noscript-bugg och två samma scroll-bugg, så 20 unika.
+Alla 20 rättade och verifierade i Blink. Dessutom ett 21:a fynd som hittades under verifieringen.
+
+## Rättat i JS (`dist/03-fore-efter.js`)
+
+| # | Defekt | Bevis | Rättning |
+|---|---|---|---|
+| 1 | **En vertikal scroll som började på fotot flyttade sömmen, släckte ledtråden för gott, fokuserade reglaget och skickade `fore_efter_interact`** — innan webbläsaren hann ta över scrollen. iOS och Android. | CDP-touch i Blink: pos 50 → 30 %, dataLayer fick interact, sidan scrollade 205 px | Touch/penna bekräftar draget först efter > 6 px i sidled och mer sidled än höjdled. Ett lyft utan rörelse är ett tryck och placerar sömmen. Musen hoppar direkt som förut. `pointercancel`/`lostpointercapture` släpper bara, flyttar aldrig. Verifierat: vertikal scroll → pos 50, ingen klass, inget fokus, tom dataLayer. |
+| 2 | Vinkningen i Safari < 16.4 blev två hopp (ingen `@property` → ingen övergång) | motorstöd | Vinkningen hoppas över där `CSS.registerProperty` saknas |
+| 3 | Vinkningen flyttade ett reglage som redan hade tangentbordsfokus | a11y | Ingen vinkning om `document.activeElement` är reglaget |
+| 4 | iOS: ett tryck som stoppar rullningsmomentum tolkades som tryck-för-att-placera | iOS-lins | Tryck inom 120 ms efter senaste scroll-händelse placerar inte |
+
+## Rättat i CSS (`dist/01-fore-efter.css`)
+
+| # | Defekt | Rättning |
+|---|---|---|
+| 5 | Safari < 16.4: `--ampyfe-pos` saknade värde tills JS kört — FÖRE över hela ramen | `--ampyfe-pos: 50%` som vanlig deklaration på figuren, `@property` kvar för animeringen |
+| 6 | **Ensamt par renderades i vänstra halvan** | `grid-column: 1 / -1` |
+| 7 | …och fick bredd 0 (hittat under verifieringen): storlekscontainer + `margin-inline: auto` = shrink-to-fit av ett element som inte får mäta sitt innehåll | `width: min(100%, 760px)` + `justify-self: center` i stället för max-width + auto-marginaler |
+| 8 | iOS 15.0–15.3: `:focus{outline:none}` tog bort ringen även där `:focus-visible` saknas — ingen ring alls | Två regler: `.fokus-fran-pekare … :focus` och `:focus:not(:focus-visible)`; en motor utan `:focus-visible` kastar den andra och behåller sin egen ring |
+| 9 | Fokusringen i teal gav 2,8:1 mot bakgrunden — under WCAG 1.4.11:s 3:1 | Midnatt (15:1), vit mellanring på handtaget |
+| 10 | Print och no-JS: EFTER-chippet lossnade och hamnade i sektionens övre högra hörn (ramen slutar vara positionerad) | Chiplagret läggs i samma rutnätscell som efter-bilden, `position: relative` |
+| 11 | Windows High Contrast: spårets gradient togs bort, bara tummen syntes | Kant i `CanvasText` på spåret |
+
+## Rättat i PHP (`dist/02-fore-efter.php`) och `build.py`
+
+| # | Defekt | Rättning |
+|---|---|---|
+| 12 | **`<noscript>`-selektorn `#a, #b .klass` betydde "hela #a" — första paret försvann helt utan JS** | Ett prefix per figur: `#a .klass,#b .klass`. Speglat i `build.py`. Verifierat: båda figurerna synliga med PHP:ns egna regler injicerade |
+| 13 | Mediabibliotekets alt-text användes aldrig — produktionen fick generiska, identiska alt-texter | Kedjan ACF-fält → `_wp_attachment_image_alt` → generisk |
+| 14 | Chipsen FÖRE/EFTER lästes upp som lösa ord | `aria-hidden="true"` — reglaget bär namnet |
+| 15 | Läsordningen var efter → före | FÖRE först i DOM, ritas överst via z-index |
+| 16 | `JSON_UNESCAPED_SLASHES`: ett `</script>` i ett fält bröt ut ur script-taggen | `JSON_HEX_TAG | JSON_HEX_AMP`; `build.py` escapar `</` |
+
+## Rättat i dokumentationen
+
+| # | Defekt | Rättning |
+|---|---|---|
+| 17 | Steg 8 beordrade utvecklaren att kryssa i Signerad — mot grinden i §5/§13 | Signerad är ägarens ruta; staging-undantaget står utskrivet |
+| 18 | §5 sa `signerad` Required: yes, ACF-JSON säger required 0 (JSON är rätt) | Tabellen rättad |
+| 19 | Steg 1-verifieringen sökte `.ampy-foreefter{` som inte finns | Söker `@property --ampyfe-pos` |
+| 20 | Importkommandot förutsatte `images/` i WordPress-roten | Sökvägen är ett argument, exempel med full sökväg |
+| 21 | Guiden pekade på `build.py`/`index.html`/`img/` som inte följer med i zippen | Pekar på repot |
+| 22 | `fore_efter_view` skickas per par, §9 sa per block | §9 säger per par, `block_id` skiljer dem |
+| 23 | README motsade koden på fyra punkter (35/65 %, kvadrat, aptext-2-5xl/500, HANDOVER.md) | README rättad |
+| 24 | `paketera.sh` pekade på PNG-filer med ChatGPT-namn som "mästare" | Borttaget — JPEG-mästarna i `images/` är mästarna; källan är ägarens polerade foton |
+
+## Kvar att verifiera på riktig enhet
+
+Samma som §5 ovan: WebKit på en riktig iPhone och Firefox. Nytt testfall som ska köras där:
+**scrolla sidan med ett finger som börjar på fotot** — sidan ska scrolla, sömmen stå kvar på 50 %,
+ledtråden synas och ingen `fore_efter_interact` skickas.
