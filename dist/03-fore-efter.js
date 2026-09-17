@@ -129,7 +129,9 @@
         try { ram.setPointerCapture(e.pointerId); } catch (fel) { /* strunt samma */ }
       }
       /* Tangentbordet ska kunna ta vid där fingret slutade. preventScroll så
-         att sidan inte hoppar när fokus flyttas. */
+         att sidan inte hoppar när fokus flyttas. Klassen talar om för CSS:en
+         att fokus kom från en pekare — ingen tangentbordsring ska visas. */
+      figur.classList.add("fokus-fran-pekare");
       try { reglage.focus({ preventScroll: true }); } catch (fel) { /* äldre motorer */ }
       mjukt(false);                       // under drag ska sömmen sitta i fingret
       satt(procentAv(e.clientX), true);
@@ -159,6 +161,19 @@
     });
 
     /* --- Reglaget: mus, pekskärm och tangentbord ------------------------- */
+    // Trycker man direkt på reglaget kom fokus också från en pekare.
+    reglage.addEventListener("pointerdown", function () {
+      figur.classList.add("fokus-fran-pekare");
+    });
+    // Första tangenttrycket: nu ÄR det en tangentbordsanvändare — visa ringen.
+    // Blur: nästa gång fokus kommer in ska webbläsaren få avgöra själv.
+    reglage.addEventListener("keydown", function () {
+      figur.classList.remove("fokus-fran-pekare");
+    }, true);
+    reglage.addEventListener("blur", function () {
+      figur.classList.remove("fokus-fran-pekare");
+    });
+
     reglage.addEventListener("input", function () {
       mjukt(false);
       satt(Number(reglage.value), true);

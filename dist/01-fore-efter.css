@@ -238,8 +238,11 @@
 }
 .ampy-foreefter__handtag svg { width: 23px; height: 23px; }
 
-/* Reglaget har fokus → handtaget visar det, för handtaget är det man tittar på. */
-.ampy-foreefter__figur:has(.ampy-foreefter__reglage:focus-visible) .ampy-foreefter__handtag {
+/* Reglaget har tangentbordsfokus → handtaget visar det, för handtaget är det
+   man tittar på. Klassen fokus-fran-pekare sätts av JS när fokus kom från ett
+   tryck i bilden; då ska ingen ring visas — det är inte en tangentbords-
+   användare, och webbläsaren kan inte se skillnaden själv. */
+.ampy-foreefter__figur:not(.fokus-fran-pekare):has(.ampy-foreefter__reglage:focus-visible) .ampy-foreefter__handtag {
   box-shadow: 0 3px 16px rgba(9, 11, 50, 0.32), 0 0 0 4px var(--ampyfe-teal);
 }
 
@@ -314,6 +317,7 @@
   appearance: none;
   touch-action: pan-y pinch-zoom;
   cursor: ew-resize;
+  -webkit-tap-highlight-color: transparent;
 }
 .ampy-foreefter__reglage::-webkit-slider-runnable-track {
   height: 6px;
@@ -350,7 +354,12 @@
   cursor: ew-resize;
 }
 .ampy-foreefter__reglage:focus { outline: none; }
-.ampy-foreefter__reglage:focus-visible {
+/* Äldre Firefox ritar en egen prickad inre ring på range-element. */
+.ampy-foreefter__reglage::-moz-focus-outer { border: 0; }
+/* Ringen runt spåret finns för tangentbordsanvändare. Kom fokus från ett tryck
+   i bilden (fokus-fran-pekare) visas den inte: annars ritas en stor ring runt
+   hela reglaget så fort man rör handtaget. Ägarrapport 2026-09-17. */
+.ampy-foreefter__figur:not(.fokus-fran-pekare) .ampy-foreefter__reglage:focus-visible {
   outline: 3px solid var(--ampyfe-teal);
   outline-offset: 4px;
   border-radius: var(--ampyfe-radie-full);
